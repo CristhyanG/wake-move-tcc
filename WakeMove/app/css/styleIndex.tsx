@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     icon: {
       backgroundColor: "#ededed",
       position: 'absolute',
-      left: 254,
+      left: 260,
       top: '2%',
       padding: 23,
       borderRadius: 19,
@@ -67,14 +67,17 @@ const styles = StyleSheet.create({
       width: 85,
       backgroundColor: "#ededed",
       borderRadius: 20,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginHorizontal: 40
+    },
+    titleButton:{
+      flex: 1,
+      justifyContent: 'flex-start',
+      alignItems: 'center'
     },
     text: {
       color: "#fff",
       textAlign: 'center',
     },
+
 });
 
 export default styles

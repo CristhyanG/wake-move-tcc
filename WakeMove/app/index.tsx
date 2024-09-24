@@ -3,6 +3,7 @@ import { Text, View, SafeAreaView, Image, TextInput, KeyboardAvoidingView, Scrol
 import { StatusBar } from "expo-status-bar";
 import styles from './css/styleIndex';
 import { Link } from 'expo-router';
+import Button from '@/Components/button';
 
 export default function Index() {
   const imgLocation = require('../src/Img/iconIndex.png');
@@ -27,12 +28,9 @@ export default function Index() {
               <Image style={styles.icon} source={lupa} />
             </View>
             <View>
-              <Link href="/Cadastrar">
-              <TouchableOpacity 
-                style={styles.btnCadastro}
+              <Link href="/cadastrar"
               >
-                <Text> Cadastar </Text>
-              </TouchableOpacity>
+                <Button/>
               </Link>
             </View>
             <View/>
