@@ -2,8 +2,8 @@ import React from 'react';
 import { Text, View, SafeAreaView, Image, TextInput, KeyboardAvoidingView, ScrollView, Platform, TouchableOpacity } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import styles from './css/styleIndex';
-import { Link } from 'expo-router';
-import Button from '@/Components/button';
+import NavButton from '@/Components/navButton';
+
 
 export default function Index() {
   const imgLocation = require('../src/Img/iconIndex.png');
@@ -18,8 +18,11 @@ export default function Index() {
       >
         <ScrollView contentContainerStyle={styles.scrollView}>
           <View style={styles.container}>
+            
             <Text style={styles.title}>Para onde vamos ?</Text>
+            
             <Image style={styles.img} source={imgLocation} />
+            
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
@@ -27,13 +30,15 @@ export default function Index() {
               />
               <Image style={styles.icon} source={lupa} />
             </View>
+
             <View>
-              <Link href="/cadastrar"
-              >
-                <Button/>
-              </Link>
+              <NavButton 
+                caminho={"./teste.tsx"}  
+                label={"Cadastro"} 
+                onPress={()=> {console.log("Botão apertado")}}
+              />
             </View>
-            <View/>
+
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
