@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View, SafeAreaView, TextInput, Image } from "react-native";
-import { useState } from "react";
+// import { useState } from "react";
 import styles from "@/app/css/styleCadastrar";
 
 export default function Cadastar() {
