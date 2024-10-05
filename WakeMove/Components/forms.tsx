@@ -5,7 +5,7 @@ import NavButton from './navButton'
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {addUser, getAllUsers} from '../data/firebase';
-import { useLocalSearchParams } from 'expo-router';
+// import { useLocalSearchParams } from 'expo-router';
 
 export default function Formulario ({tipo}) {
   

@@ -1,8 +1,16 @@
-import React from "react";
-import { CustonTitle } from '../../Components/Title';
+import React from 'react'; // Importando React
+import { View, Text } from 'react-native';
 
-export default function CadastroScreen() {
-    return (
-        <CustonTitle>Testando</CustonTitle>
-    );
+interface CadastroScreenProps {
+    navigation: any; // Você pode usar um tipo mais específico se tiver
 }
+
+const CadastroScreen: React.FC<CadastroScreenProps> = ({ navigation }) => {
+    return (
+        <View>
+            <Text>Testando</Text>
+        </View>
+    );
+};
+
+export default CadastroScreen;

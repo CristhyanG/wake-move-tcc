@@ -7,7 +7,7 @@ interface Props{
     children: ReactNode
 }
 
-export const CustonText: React.FC<Props> = ({children})=>{
+export const CustomText: React.FC<Props> = ({children})=>{
     return(
         <Text style={styles.text}>{children}</Text>
     )

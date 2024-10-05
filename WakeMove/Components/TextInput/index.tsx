@@ -1,6 +1,6 @@
 import React from "react";
 import { TextInput } from "react-native";
-import { ReactNode } from "react";
+// import { ReactNode } from "react";
 import {styles} from './styles';
 
 interface Props {
