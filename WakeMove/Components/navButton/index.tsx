@@ -1,4 +1,5 @@
-import { View, Button, StyleSheet } from "react-native";
+import { View, Button } from "react-native";
+import { styles } from './styles'
 
 interface NavButtonProps {
     caminho: string;
@@ -17,13 +18,3 @@ export default function NavButton({ caminho, label, navigation }: NavButtonProps
     );
 }
 
-const styles = StyleSheet.create({
-    btnContainer: {
-        width: 100,
-        height: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#2b2bff',
-        borderRadius: 10,
-    },
-});
