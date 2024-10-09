@@ -1,18 +1,21 @@
 import React from 'react'; // Importando React
 import { View, Text } from 'react-native';
-import Formulario from '@/Components/forms'
+import Formulario from '@/Components/forms';
+import { StackNavigationProp } from '@react-navigation/stack';
+import {Container} from '@/Components/View/index';
 
 interface CadastroScreenProps {
-    navigation: any; // Você pode usar um tipo mais específico se tiver
+    navigation: StackNavigationProp <any>; // Você pode usar um tipo mais específico se tiver
 }
 
 const CadastroScreen: React.FC<CadastroScreenProps> = ({ navigation }) => {
     return (
-        <View>
-            {/* <Formulario 
-                tipo="Login"
-            /> */}
-        </View>
+        <Container>
+            <Formulario 
+                tipo="NovoCadastro"
+                navigation={navigation}
+            />
+        </Container>
     );
 };
 

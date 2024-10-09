@@ -4,12 +4,14 @@ import { Button } from "react-native";
 
 interface Props {
     title: string;
+    onPress: any;
 }
 
-export const Btn: React.FC<Props> = ({title}) => {
+export const Btn: React.FC<Props> = ({title, onPress}) => {
     return(
         <Button
             title={title}
+            onPress={onPress}
         />
     )
 }

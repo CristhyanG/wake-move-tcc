@@ -6,7 +6,7 @@ import { ImgIndex } from '../Components/imgIndex';
 import { Input } from '../Components/TextInput';
 import { StackNavigationProp } from "@react-navigation/stack";
 import NavButton from "@/Components/navButton";
-import {Container} from '../Components/View/index'
+import {Container} from '../Components/View/index';
 
 
 interface HomeScreenProps {

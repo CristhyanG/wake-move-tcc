@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import { useForm, Controller} from 'react-hook-form';
-import { Text, View, StyleSheet, TextInput  } from "react-native";
-import NavButton from '@/Components/navButton'
+import { Text, View, Alert, TextInput  } from "react-native";
+import NavButton from '@/Components/navButton';
 import {Btn} from '@/Components/Button';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {addUser, getAllUsers} from '@/data/firebase';
-import Field from '@/Components/Fields'
-import {CustomTitle} from '@/Components/Title';
+import Field from '@/Components/Fields';
+
 // import { useLocalSearchParams } from 'expo-router';
 
 interface FormularioProps {
-  tipo: string;
+  tipo: 'Login' | 'NovoCadastro';
+  navigation: any;
 }
 
-const Formulario: React.FC<FormularioProps> = ({tipo}) => {
+const Formulario: React.FC<FormularioProps> = ({tipo, navigation}) => {
   
   const [users, setUsers] = useState([]);
   
@@ -35,8 +36,13 @@ const Formulario: React.FC<FormularioProps> = ({tipo}) => {
     if(tipo == "Login") {
         
         const schema = yup.object ({
-            email: yup.string().email("email inválido").required("informe seu email"),
-            senha: yup.string().required("digite sua senha")
+            email: 
+              yup.string()
+              .email("Email inválido")
+              .required("Informe seu email"),
+            senha: 
+              yup.string()
+              .required("Digite sua senha")
         })
           
         const {control, handleSubmit, formState: {errors} } = useForm ({ /* é possível usar o defaultValues dentro de ({}) para colocar alguumas definições de valores*/
@@ -44,7 +50,6 @@ const Formulario: React.FC<FormularioProps> = ({tipo}) => {
         }) 
         
         const handleSignIn = async (data) => {
-
           try{
             const {email, senha} = data;
             console.log("Dados recebidos no handleSignIn:", email, senha);
@@ -54,29 +59,28 @@ const Formulario: React.FC<FormularioProps> = ({tipo}) => {
             console.error("Erro ao cadastrar usuário", error.message)
           }  
         };
-
         
         return (
             <View /*style={styles.container} */>
                 
                 {/* <CustomTitle> Login </CustomTitle> */}
                 
-                <Field 
+                <Field
                   control={control}
                   errors={errors}
-                  Name='Email'
-                  Title='Email'
-                  PlaceHolder='Digite seu Email'
-                  tipo={"email-address"}
+                  name="email"
+                  Title="Email"
+                  placeholder="Digite seu email"
+                  tipo="email"
                 />
 
-                <Field 
+                <Field
                   control={control}
                   errors={errors}
-                  Name='Senha'
-                  Title='Senha'
-                  PlaceHolder='Digite sua Senha'
-                  tipo={"default"}
+                  name="senha"
+                  Title="Senha"
+                  placeholder="Digite sua senha"
+                  tipo="senha"
                 />
                 
                 <View /*style={styles.btns}*/>
@@ -87,8 +91,9 @@ const Formulario: React.FC<FormularioProps> = ({tipo}) => {
                     />
             
                     <NavButton
-                      caminho="Home"
-                      label="Voltar"
+                      caminho={'Home'}
+                      label={"Voltar"}
+                      navigation={navigation}
                     />
         
                 </View>
@@ -132,64 +137,32 @@ const Formulario: React.FC<FormularioProps> = ({tipo}) => {
                 
                 <Text /*style={styles.cadastroTiltle} */>Novo Cadastro </Text>
                 
-                <View /* CAMPO DE EMAIL */>
-                  <Text >Email</Text>      
-                  <Controller //FAZER UM COMPONENTE CONTROLLER
-                    control={control} //user form => linha 9
-                    name="email" //nome do campo
-                    render={({ field: {onChange, onBlur, value} }) => ( //render = renderizar / passa também propriedaes dessa função criada
-                        <TextInput
-                        // style={styles.input}
-                        placeholder="   Digite seu Email"
-                        onChangeText={onChange} //troca os use state por prop da renderização
-                        onBlur={onBlur} //chamado quando o text input é trocado
-                        value={value || ""} //troca valor de estado por valor de propriedade
-                        keyboardType="email-address"
-                      />
-                    )}
-                  />
-                  {errors.email && <Text /*style={styles.labelErrors}*/ > {errors.email?.message} </Text>}
-                </View>
-
-                <View /* CAMPO DE SENHA */>
-                  <Text >Senha</Text> 
-                  <Controller
-                    control={control} 
-                    name="senha" //MUDAR AQUI
-                    render={({ field: {onChange, onBlur, value} }) => (
-                      <TextInput
-                        // style={styles.input}
-                        placeholder="   Digite sua Senha" //MUDAR AQUI
-                        onChangeText={onChange} 
-                        onBlur={onBlur}
-                        value={value || ""} //MUDAR AQUI
-                        keyboardType="default" //MUDAR AQUI
-                        secureTextEntry={true} //MUDAR AQUI
-                      /> 
-                    )}
-                  />        
-                    {errors.senha && <Text /*style={styles.labelErrors}*/ > {errors.senha?.message} </Text>}
-                </View>
-
-                <View /* CAMPO DE CONFIRMAÇÃO */>
-                <Text >Confirme sua senha</Text>
-                <Controller
+                <Field
                   control={control}
-                  name="confirmaSenha"
-                  render={({ field: {onChange, onBlur, value} }) => ( 
-                    <TextInput
-                    //   style={styles.input}
-                      placeholder="   Confirme sua Senha" 
-                      onChangeText={onChange} 
-                      onBlur={onBlur} 
-                      value={value || ""} 
-                      keyboardType="default" 
-                      secureTextEntry={true}
-                    /> 
-                  )}
+                  errors={errors}
+                  name="email"
+                  Title="Email"
+                  placeholder="Digite seu email"
+                  tipo="email"
                 />
-                {errors.confirmaSenha && <Text /*style={styles.labelErrors}*/> {errors.confirmaSenha?.message} </Text>}
-                </View>
+
+                <Field
+                  control={control}
+                  errors={errors}
+                  name="senha"
+                  Title="Senha"
+                  placeholder="Digite sua senha"
+                  tipo="senha"
+                />
+
+                <Field
+                  control={control}
+                  errors={errors}
+                  name="confirmaSenha"
+                  Title="Confirme a senha"
+                  placeholder="Confirme sua senha"
+                  tipo="senha"
+                />
 
                 <View /*style={styles.btns} */>
                 
@@ -202,6 +175,7 @@ const Formulario: React.FC<FormularioProps> = ({tipo}) => {
                   <NavButton
                     caminho="Home"
                     label="Voltar"
+                    navigation={navigation}
                   />
                 </View>
             </View>
