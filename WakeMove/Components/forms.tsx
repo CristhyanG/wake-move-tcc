@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { useForm, Controller} from 'react-hook-form';
 import { Text, View, StyleSheet, TextInput  } from "react-native";
-import NavButton from './navButton'
+import NavButton from '@/Components/navButton'
+import {Btn} from '@/Components/Button';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import {addUser, getAllUsers} from '../data/firebase';
+import {addUser, getAllUsers} from '@/data/firebase';
+import Field from '@/Components/Fields'
+import {CustomTitle} from '@/Components/Title';
 // import { useLocalSearchParams } from 'expo-router';
 
-export default function Formulario ({tipo}) {
+interface FormularioProps {
+  tipo: string;
+}
+
+const Formulario: React.FC<FormularioProps> = ({tipo}) => {
   
   const [users, setUsers] = useState([]);
   
@@ -37,16 +44,6 @@ export default function Formulario ({tipo}) {
         }) 
         
         const handleSignIn = async (data) => {
-          // try{
-          //   const {email, senha} = data;
-          //   const user = await addDoc(userCollectionRef, {
-          //     usEmail: email,
-          //     usSenha: senha,
-          //   });
-          //   console.log("usuario cadastrado com id:", user.id)
-          // } catch(error){
-          //   console.error("Erro ao cadastrar usuário", error)
-          // }
 
           try{
             const {email, senha} = data;
@@ -57,63 +54,41 @@ export default function Formulario ({tipo}) {
             console.error("Erro ao cadastrar usuário", error.message)
           }  
         };
+
         
         return (
             <View /*style={styles.container} */>
                 
-                <Text /*style={styles.cadastroTiltle} */>Entrar</Text>
+                {/* <CustomTitle> Login </CustomTitle> */}
                 
-                <Text >Email</Text>      
-                <Controller //FAZER UM COMPONENTE CONTROLLER
-                  control={control} //user form => linha 9
-                  name="email" //nome do campo
-                  render={({ field: {onChange, onBlur, value} }) => ( //render = renderizar / passa também propriedaes dessa função criada
-                    <TextInput
-                    //   style={styles.input}
-                      placeholder="   Digite seu Email"
-                      onChangeText={onChange} //troca os use state por prop da renderização
-                      onBlur={onBlur} //chamado quando o text input é trocado
-                      value={value || ''} //troca valor de estado por valor de propriedade
-                      keyboardType="email-address"
-                    />
-                  )}
+                <Field 
+                  control={control}
+                  errors={errors}
+                  Name='Email'
+                  Title='Email'
+                  PlaceHolder='Digite seu Email'
+                  tipo={"email-address"}
                 />
-                {errors.email && <Text /*style={styles.labelErrors}*/> {errors.email?.message} </Text>}
-                
-                <Text >Senha</Text>
-                <Controller
-                  control={control} //user form => linha 9
-                  name="senha" //nome do campo
-                  render={({ field: {onChange, onBlur, value} }) => ( //render = renderizar / passa também propriedaes dessa função criada
-                    <TextInput
-                    //   style={styles.input}
-                      placeholder="   Digite sua Senha"
-                      onChangeText={onChange} //troca os use state por prop da renderização
-                      onBlur={onBlur} //chamado quando o text input é trocado
-                      value={value || ''} //troca valor de estado por valor de propriedade
-                      keyboardType="default"
-                      secureTextEntry={true}
-                    /> 
-                  )}
+
+                <Field 
+                  control={control}
+                  errors={errors}
+                  Name='Senha'
+                  Title='Senha'
+                  PlaceHolder='Digite sua Senha'
+                  tipo={"default"}
                 />
-                {errors.senha && <Text /*style={styles.labelErrors}*/> {errors.senha?.message} </Text>}
-        
-        
-                
                 
                 <View /*style={styles.btns}*/>
                 
-                    <NavButton
-                        caminho={'/'}
-                        label={'Login'}
-                        // style={styles.btnCadastro}
-                        onPress={handleSubmit(handleSignIn)} //invés de mudança de estado chama esta função handleSign com status handleSubmit
+                    <Btn
+                      title={'Login'}
+                      onPress={handleSubmit(handleSignIn)}
                     />
             
                     <NavButton
-                        onPress={()=>alert('Deseja retornar ao menu principal?')} 
-                        caminho={'/'}
-                        label={'Voltar'}
+                      caminho="Home"
+                      label="Voltar"
                     />
         
                 </View>
@@ -141,17 +116,7 @@ export default function Formulario ({tipo}) {
         }); 
         
         const handleSignIn = async (data) => {
-          // try{
-          //   const {email, senha} = data;
-          //   const user = await addDoc(userCollectionRef, {
-          //     usEmail: email,
-          //     usSenha: senha,
-          //   });
-          //   console.log("usuario cadastrado com id:", user.id)
-          // } catch(error){
-          //   console.error("Erro ao cadastrar usuário", error)
-          // }
-
+   
           try{
             const {email, senha} = data;
             console.log("Dados recebidos no handleSignIn:", email, senha);
@@ -210,16 +175,16 @@ export default function Formulario ({tipo}) {
                 <Text >Confirme sua senha</Text>
                 <Controller
                   control={control}
-                  name="confirmaSenha" //MUDAR AQUI
+                  name="confirmaSenha"
                   render={({ field: {onChange, onBlur, value} }) => ( 
                     <TextInput
                     //   style={styles.input}
-                      placeholder="   Confirme sua Senha" //MUDAR AQUI
+                      placeholder="   Confirme sua Senha" 
                       onChangeText={onChange} 
                       onBlur={onBlur} 
-                      value={value || ""} //MUDAR AQUI
-                      keyboardType="default" //MUDAR AQUI
-                      secureTextEntry={true} //MUDAR AQUI
+                      value={value || ""} 
+                      keyboardType="default" 
+                      secureTextEntry={true}
                     /> 
                   )}
                 />
@@ -228,24 +193,23 @@ export default function Formulario ({tipo}) {
 
                 <View /*style={styles.btns} */>
                 
-                    <NavButton
-                        caminho={'/'}
-                        label={'Cadastrar'}
-                        // style={styles.btnCadastro}
-                        onPress={handleSubmit(handleSignIn)} //invés de mudança de estado chama esta função handleSign com status handleSubmit
+                    <Btn
+                      title={'Cadastrar'}
+                      onPress={handleSubmit(handleSignIn)}
                     />
-            
-                    <NavButton
-                        onPress={()=>alert('Deseja retornar ao menu principal?')} 
-                        caminho={'/'}
-                        label={'Voltar'}
-                    />
-            
+
+                  
+                  <NavButton
+                    caminho="Home"
+                    label="Voltar"
+                  />
                 </View>
             </View>
             )
         
     }
 } 
+
+export default Formulario;
 
   
