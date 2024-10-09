@@ -1,5 +1,6 @@
 import React from 'react'; // Importando React
 import { View, Text } from 'react-native';
+import Formulario from '@/Components/forms'
 
 interface CadastroScreenProps {
     navigation: any; // Você pode usar um tipo mais específico se tiver
@@ -8,7 +9,9 @@ interface CadastroScreenProps {
 const CadastroScreen: React.FC<CadastroScreenProps> = ({ navigation }) => {
     return (
         <View>
-            <Text>Testando</Text>
+            {/* <Formulario 
+                tipo="Login"
+            /> */}
         </View>
     );
 };
