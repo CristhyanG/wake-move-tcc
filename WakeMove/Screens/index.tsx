@@ -33,6 +33,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         label="Cadastro"
         navigation={navigation}
       />
+
+      <NavButton
+        caminho="Location"
+        label="Localização"
+        navigation={navigation}
+      />
     </Container>
   );
 };

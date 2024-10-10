@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { Text, View, Alert, StyleSheet } from "react-native";
+import { useForm } from 'react-hook-form';
+import { View } from "react-native";
 import NavButton from '@/Components/navButton';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { addUser, getAllUsers } from '@/data/firebase';
-import { Input } from '@/Components/TextInput';
+import Field  from '@/Components/Fields';
 import { Btn } from "@/Components/Button/index";
 
 interface FormularioProps {
@@ -55,35 +55,23 @@ const Formulario: React.FC<FormularioProps> = ({ tipo, navigation }) => {
     return (
       <View >
         
-        <Controller
-          control={control}
-          name="email"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              placeholder="Digite seu email"
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              error={errors.email?.message}
-              label="Email"
-            />
-          )}
-        />
+     <Field 
+      control={control}
+      errors={errors}
+      name='email'
+      Title='Email'
+      placeholder='Digite seu email'
+      tipo='email'
+     />
 
-        <Controller
-          control={control}
-          name="senha"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              placeholder="Digite sua senha"
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              error={errors.senha?.message}
-              label="Senha"
-            />
-          )}
-        />
+    <Field 
+      control={control}
+      errors={errors}
+      name='senha'
+      Title='Senha'
+      placeholder='Digite sua senha'
+      tipo='senha'
+     />
 
         <View >
           <Btn
@@ -125,49 +113,31 @@ const Formulario: React.FC<FormularioProps> = ({ tipo, navigation }) => {
     return (
       <View >
         
-        <Controller
+        <Field
           control={control}
-          name="email"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              placeholder="Digite seu email"
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              error={errors.email?.message}
-              label="Email"
-            />
-          )}
+          errors={errors}
+          name='email'
+          Title='Email'
+          placeholder='Digite seu email'
+          tipo='email'
         />
 
-        <Controller
+        <Field 
           control={control}
-          name="senha"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              placeholder="Digite sua senha"
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              error={errors.senha?.message}
-              label="Senha"
-            />
-          )}
-        />
+          errors={errors}
+          name='senha'
+          Title='Senha'
+          placeholder='Digite sua senha'
+          tipo='senha'
+        /> 
 
-        <Controller
+        <Field 
           control={control}
-          name="confirmaSenha"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Input
-              placeholder="Confirme sua senha"
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              error={errors.confirmaSenha?.message}
-              label="Confirme a senha"
-            />
-          )}
+          errors={errors}
+          name='confirmaSenha'
+          Title='Confirma Senha'
+          placeholder='Confirme sua senha'
+          tipo='senha'
         />
 
         <View >
