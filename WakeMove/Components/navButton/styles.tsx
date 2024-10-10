@@ -1,10 +1,12 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
+
+const { width, height} = Dimensions.get('window')
 
 export const styles = StyleSheet.create({
     btnContainer: {
-        // flex: 1,
-        // alignItems: 'center',
-        // justifyContent: 'center',
-        // borderRadius: 10,
+        alignItems: 'center',
+         justifyContent: 'center',
+         borderRadius: 10,
+         margin: width * 0.15
     },
 });
