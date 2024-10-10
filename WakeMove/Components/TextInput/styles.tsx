@@ -1,18 +1,26 @@
-import { StyleSheet } from "react-native";
-import { Dimensions } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 
 const {width, height} = Dimensions.get('window')
 
 export const styles = StyleSheet.create({
-    TextInput: {
-        height: height *  0.05,
-        width: width * 0.5,
-        textAlign: 'center',
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 15,
-        paddingHorizontal: 10,
-        fontSize: 16,
-        backgroundColor: '#fff',
+    container: {
+        marginVertical: 10,
     },
+    label: {
+        fontSize: 16,
+        marginBottom: 5,
+    },
+    textInput: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        padding: 10,
+        borderRadius: 5,
+    },
+    inputError: {
+        borderColor: '#00f',
+    },
+    errorText: {
+        color: '#00f',
+        marginTop: 5,
+    }
 })
