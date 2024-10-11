@@ -8,6 +8,7 @@ import { addUser, getAllUsers } from '@/data/firebase';
 import Field  from '@/Components/Fields';
 import { Btn } from "@/Components/Button/index";
 
+
 interface FormularioProps {
   tipo: 'Login' | 'NovoCadastro';
   navigation: any;
