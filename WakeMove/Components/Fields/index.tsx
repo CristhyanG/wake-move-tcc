@@ -8,9 +8,10 @@ interface FieldProps {
     Title: string; // Rótulo do campo
     placeholder: string; // Placeholder do campo
     tipo: string; // Tipo do campo (email, senha, etc.)
+    style: any
 }
 
-const Field: React.FC<FieldProps> = ({ control, errors, name, Title, placeholder, tipo }) => {
+const Field: React.FC<FieldProps> = ({ control, errors, name, Title, placeholder, tipo, style }) => {
     return (
         <View>
             <Text>{Title}</Text>
@@ -19,6 +20,7 @@ const Field: React.FC<FieldProps> = ({ control, errors, name, Title, placeholder
                 name={name}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
+                        style={style}
                         placeholder={placeholder}
                         onChangeText={onChange}
                         onBlur={onBlur}

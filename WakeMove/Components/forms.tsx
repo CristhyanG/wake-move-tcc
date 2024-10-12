@@ -5,9 +5,9 @@ import NavButton from '@/Components/navButton';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { addUser, getAllUsers } from '@/data/firebase';
-import Field  from '@/Components/Fields';
+import Field from '@/Components/Fields';
 import { Btn } from "@/Components/Button/index";
-
+import { styles } from "./stylesForms"
 
 interface FormularioProps {
   tipo: 'Login' | 'NovoCadastro';
@@ -54,25 +54,27 @@ const Formulario: React.FC<FormularioProps> = ({ tipo, navigation }) => {
     };
 
     return (
-      <View >
-        
-     <Field 
-      control={control}
-      errors={errors}
-      name='email'
-      Title='Email'
-      placeholder='Digite seu email'
-      tipo='email'
-     />
+      <View style={styles.container} >
 
-    <Field 
-      control={control}
-      errors={errors}
-      name='senha'
-      Title='Senha'
-      placeholder='Digite sua senha'
-      tipo='senha'
-     />
+        <Field
+          style={styles.input}
+          control={control}
+          errors={errors}
+          name='email'
+          Title='Email'
+          placeholder='Digite seu email'
+          tipo='email'
+        />
+
+        <Field
+          style={styles.input}
+          control={control}
+          errors={errors}
+          name='senha'
+          Title='Senha'
+          placeholder='Digite sua senha'
+          tipo='senha'
+        />
 
         <View >
           <Btn
@@ -113,8 +115,9 @@ const Formulario: React.FC<FormularioProps> = ({ tipo, navigation }) => {
 
     return (
       <View >
-        
+
         <Field
+          style={styles.input}
           control={control}
           errors={errors}
           name='email'
@@ -123,16 +126,18 @@ const Formulario: React.FC<FormularioProps> = ({ tipo, navigation }) => {
           tipo='email'
         />
 
-        <Field 
+        <Field
+          style={styles.input}
           control={control}
           errors={errors}
           name='senha'
           Title='Senha'
           placeholder='Digite sua senha'
           tipo='senha'
-        /> 
+        />
 
-        <Field 
+        <Field
+          style={styles.input}
           control={control}
           errors={errors}
           name='confirmaSenha'

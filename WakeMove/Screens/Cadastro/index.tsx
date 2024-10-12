@@ -13,9 +13,9 @@ interface CadastroScreenProps {
 const CadastroScreen: React.FC<CadastroScreenProps> = ({ navigation }) => {
     return (
         <Container>
-            <ImgCad/>
-                <CustomTitle> Novo Usuário</CustomTitle>
-            <Content>   
+            <ImgCad />
+            <CustomTitle> Novo Usuário</CustomTitle>
+            <Content>
                 <Formulario
                     tipo="NovoCadastro"
                     navigation={navigation}
