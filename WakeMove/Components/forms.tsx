@@ -8,6 +8,7 @@ import { addUser, getAllUsers } from '@/data/firebase';
 import Field from '@/Components/Fields';
 import { Btn } from "@/Components/Button/index";
 import { styles } from "./stylesForms"
+import { CustonModal } from './alert/index';
 
 interface FormularioProps {
   tipo: 'Login' | 'NovoCadastro';
@@ -17,6 +18,15 @@ interface FormularioProps {
 const Formulario: React.FC<FormularioProps> = ({ tipo, navigation }) => {
 
   const [users, setUsers] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false)
+
+  const handleShowModal = () =>{
+    setModalVisible(true);
+  }
+
+  const handleCloseModal = () =>{
+    setModalVisible(false);
+  }
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -54,7 +64,7 @@ const Formulario: React.FC<FormularioProps> = ({ tipo, navigation }) => {
     };
 
     return (
-      <View style={styles.container} >
+      <View>
 
         <Field
           style={styles.input}
@@ -108,6 +118,7 @@ const Formulario: React.FC<FormularioProps> = ({ tipo, navigation }) => {
         console.log("Dados recebidos no handleSignIn:", email, senha);
         const userId = await addUser({ usEmail: email, usSenha: senha });
         console.log("Usuário cadastrado com ID:", userId);
+        handleShowModal();
       } catch (error) {
         console.error("Erro ao cadastrar usuário", error.message);
       }
@@ -151,6 +162,14 @@ const Formulario: React.FC<FormularioProps> = ({ tipo, navigation }) => {
             title={'Cadastrar'}
             onPress={handleSubmit(handleSignIn)}
           />
+
+          <CustonModal
+            visible={modalVisible}
+            onClose={handleCloseModal}
+            modalText="Usuário Cadastrado"
+          >
+          </CustonModal>
+
           <NavButton
           onPress={()=>{}}
             caminho="Home"

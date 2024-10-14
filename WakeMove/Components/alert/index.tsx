@@ -1,36 +1,42 @@
-import React from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import {styles} from "./styles"
-import { ReactNode } from 'react';
+import React from "react";
+import { Alert, Modal, View, Text, Pressable } from "react-native";
+import { styles } from "./styles";
 
-interface itensModal{
-  visible: any;
-  onClose: any;
-  title: string;
-  message: string
-  children: ReactNode;
+interface CustonModalProps {
+    visible: boolean;
+    onClose: () => void;
+    onShow?: () => void;
+    alert?: any;
+    modalText?: string;
+    buttonText?: string;
+    children?: React.ReactNode;
 }
 
-export const CustomAlert = ({ visible, onClose, title, message, children }: itensModal) => {
+export const CustonModal = ({ visible, onClose, onShow, alert, modalText, children, }: CustonModalProps) => {
     return (
-        <Modal
-            transparent={true} 
-            animationType="fade" 
-            visible={visible} 
-            onRequestClose={onClose} 
-        >
-          {children}
-            <View style={styles.overlay}>
-                <View style={styles.alertContainer}>
-                    <Text style={styles.title}>{title}</Text>
-                    <Text style={styles.message}>{message}</Text>
-                    <TouchableOpacity style={styles.button} onPress={onClose}>
-                        <Text style={styles.buttonText}>OK</Text>
-                    </TouchableOpacity>
+        <View style={styles.centeredView}>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={visible}
+                onRequestClose={() => {
+                    Alert.alert = alert;
+                    onClose();
+                }}
+                onShow={onShow}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        {children ? children : <Text style={styles.modalText}>{modalText}</Text>}
+                        <Pressable
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={onClose}
+                        >
+                            <Text style={styles.textStyle}>Hide Modal</Text>
+                        </Pressable>
+                    </View>
                 </View>
-            </View>
-        </Modal>
+            </Modal>
+        </View>
     );
 };
-
-export default CustomAlert;

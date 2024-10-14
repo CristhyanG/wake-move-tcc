@@ -1,40 +1,41 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-    overlay: {
-        flex: 1,
-        justifyContent: 'center',
+    centeredView: {
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    }, 
-    alertContainer: {
-        width: 300,
-        padding: 20,
-        borderRadius: 10,
-        backgroundColor: 'white', 
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
         elevation: 5,
-        shadowColor: '#000', 
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4, 
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 10, 
-    },
-    message: {
-        fontSize: 16,
-        marginBottom: 20, 
-    },
-    button: {
-        alignSelf: 'flex-end', 
-        backgroundColor: '#007bff', 
+      },
+      button: {
+        borderRadius: 20,
         padding: 10,
-        borderRadius: 5,
-    },
-    buttonText: {
-        color: 'white', 
-        fontWeight: 'bold', 
-    },
-});
+        elevation: 2,
+      },
+      buttonOpen: {
+        backgroundColor: '#F194FF',
+      },
+      buttonClose: {
+        backgroundColor: '#2196F3',
+      },
+      textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      },
+      modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+      },
+})
