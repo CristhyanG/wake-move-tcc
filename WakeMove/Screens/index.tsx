@@ -1,15 +1,13 @@
 import React, { useState } from "react";
-import { CustomTitle } from '../Components/Title'; 
-import { Alert } from "react-native";
+import { CustomTitle } from '../Components/Title';
+import { Alert, Button } from "react-native";
 import { ImgIndex } from '../Components/imgIndex';
 import { Input } from '../Components/TextInput';
 import { StackNavigationProp } from "@react-navigation/stack";
 import NavButton from "@/Components/navButton";
-import { Container } from '@/Components/container/index'
-import { Lupa } from "@/Components/molecula/icon"
-import {LocationProvider} from "@/Components/locationProvider"
-import {MapDisplay} from "@/Components/mapDisplay"
-import CustomAlert from "@/Components/alert/index"
+import { Container } from '@/Components/container/index';
+import { Lupa } from "@/Components/molecula/icon";
+import { CustonModal } from "@/Components/alert/index"; // Ajuste o caminho conforme necessário
 
 interface HomeScreenProps {
   navigation: StackNavigationProp<any>;
@@ -17,15 +15,21 @@ interface HomeScreenProps {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [ponto, setPonto] = useState('');
- 
-  const showAlert = () => (
-      Alert.alert("Localizando")
-  )
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleShowModal = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    Alert.alert("Modal fechado");
+  };
+
   return (
     <Container>
-    <LocationProvider>
       <CustomTitle>Wake Move</CustomTitle>
-      
+
       <ImgIndex />
 
       <Input
@@ -33,21 +37,30 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         value={ponto}
         onChangeText={setPonto}
       />
-      <Lupa/>
+      <Lupa />
       <NavButton
-        onPress={()=>{}}
         caminho="Cadastro"
         label="Cadastro"
         navigation={navigation}
       />
 
       <NavButton
-        onPress={showAlert}
         caminho="Location"
         label="Localização"
         navigation={navigation}
       />
-      </LocationProvider>
+
+      <Button
+        title="Mostrar Modal"
+        onPress={handleShowModal}
+      />
+
+      <CustonModal
+        visible={modalVisible}
+        onClose={handleCloseModal}
+        modalText="Usuário cadastrado"
+      >
+      </CustonModal>
     </Container>
   );
 };

@@ -5,6 +5,7 @@ import { Container } from '@/Components/container/index';
 import { ImgCad } from '@/Components/imgCadastro/index';
 import { Content } from '@/Components/View/index';
 import { CustomTitle } from '@/Components/Title/index'
+import {CustonModal} from "@/Components/alert/index"
 
 interface CadastroScreenProps {
     navigation: StackNavigationProp<any>; // Você pode usar um tipo mais específico se tiver

@@ -5,15 +5,14 @@ interface NavButtonProps {
     caminho: string;
     label: string;
     navigation: any; 
-    onPress: () => void;
 }
 
-export default function NavButton({ caminho, label, navigation, onPress }: NavButtonProps) {
+export default function NavButton({ caminho, label, navigation }: NavButtonProps) {
     return (
         <View style={styles.btnContainer}>
             <Button 
                 title={label}
-                onPress={() => {navigation.navigate(caminho); onPress()}}
+                onPress={() => navigation.navigate(caminho)}
             />
         </View>
     );
