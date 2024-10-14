@@ -171,6 +171,7 @@ const Formulario: React.FC<FormularioProps> = ({ tipo, navigation }) => {
           </CustonModal>
 
           <NavButton
+          onPress={()=>{}}
             caminho="Home"
             label="Voltar"
             navigation={navigation}
