@@ -152,6 +152,7 @@ const Formulario: React.FC<FormularioProps> = ({ tipo, navigation }) => {
             onPress={handleSubmit(handleSignIn)}
           />
           <NavButton
+          onPress={()=>{}}
             caminho="Home"
             label="Voltar"
             navigation={navigation}
