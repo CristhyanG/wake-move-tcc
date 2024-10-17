@@ -1,19 +1,39 @@
-import React from 'react';
-import { LocationProvider } from '@/Components/locationProvider';
-import { MapDisplay } from '@/Components/mapDisplay';
-import {Text, View} from 'react-native';
-import {useAddress} from '@/Components/AddressContext'
+import React from "react";
+import { View, Text } from "react-native";
+import MapView, { Marker } from 'react-native-maps';
+import { useGeocode } from "@/Components/GeocodeProvider";
 
-export const LocationScreen = () => {
+const LocationScreen: React.FC = () => {
+  const { locations } = useGeocode();
 
-    const {address} = useAddress();
-    
-    return (
-        <LocationProvider>
-            {/* <MapDisplay /> */}
-            <View>
-                <Text> Endereço: {address} </Text>
-            </View>
-        </LocationProvider>
-    );
-}
+  return (
+    <View style={{ flex: 1 }}>
+      {locations.length > 0 ? (
+        <MapView
+          style={{ flex: 1 }}
+          initialRegion={{
+            latitude: locations[0].latitude,
+            longitude: locations[0].longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        >
+          {locations.map((location, index) => (
+            <Marker
+              key={index}
+              coordinate={{ 
+                latitude: location.latitude, 
+                longitude: location.longitude
+              }}
+              title={`Result ${index + 1}`}
+            />
+          ))}
+        </MapView>
+      ) : (
+        <Text>Carregando localização...</Text>
+      )}
+    </View>
+  );
+};
+
+export default LocationScreen;
