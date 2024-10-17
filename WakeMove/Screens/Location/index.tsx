@@ -1,9 +1,11 @@
+
 import React from "react";
 import { View, Text } from "react-native";
 import MapView, { Marker } from 'react-native-maps';
 import { useGeocode } from "@/Components/GeocodeProvider";
-
+        
 const LocationScreen: React.FC = () => {
+  
   const { locations } = useGeocode();
 
   return (

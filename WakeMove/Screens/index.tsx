@@ -1,17 +1,16 @@
 import React, { useState } from "react";
-import { CustomTitle } from '../Components/Title';
-import { Alert, Button } from "react-native";
-import { ImgIndex } from '../Components/imgIndex';
-import { Input } from '../Components/TextInput';
+import { KeyboardAvoidingView, Platform } from "react-native";
+import { CustomTitle } from '../Components/Atomo/Title';
+import { ImgIndex } from '../Components/Atomo/imgIndex';
 import { StackNavigationProp } from "@react-navigation/stack";
-import NavButton from "@/Components/navButton";
+import NavButton from "@/Components/Atomo/navButton";
+import { styles } from "@/Components/Atomo/navButton/styles";
 import { Container } from '@/Components/container/index';
 import { Lupa } from "@/Components/molecula/icon";
 import { useAddress } from "@/Components/AddressContext";
-import { CustonModal } from "@/Components/alert/index"; // Ajuste o caminho conforme necessário
 import { useGeocode } from '@/Components/GeocodeProvider';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-
+//import { SeacrhView } from "@/Components/molecula/SeacrhView/index";
 
 
 interface HomeScreenProps {
@@ -19,10 +18,11 @@ interface HomeScreenProps {
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+  
   const { address, setAddress } = useAddress();
-  const { geocodeAddress } = useGeocode();
-  const [modalVisible, setModalVisible] = useState(false);
 
+  const { geocodeAddress } = useGeocode();
+  
   const handleLocationPress = async (address: string) => {
     const result = await geocodeAddress(address);
     if (result.success) {
@@ -33,20 +33,19 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     }
   };
 
-  const handleShowModal = () => {
-    setModalVisible(true);
-  };
-
-  const handleCloseModal = () => {
-    setModalVisible(false);
-    Alert.alert("Modal fechado");
-  };
 
   return (
+    <KeyboardAvoidingView
+      style=({flex: 1})
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+    
     <Container>
+        
         <CustomTitle>Wake Move</CustomTitle>
 
         <ImgIndex />
+      
         <GooglePlacesAutocomplete
           placeholder="Para onde vamos?"
           onPress={(data, details = null) => {
@@ -69,26 +68,23 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           }}
         />
         <Lupa />
+
         <NavButton
+          style={styles.btn}
           caminho="Cadastro"
           label="Cadastro"
           navigation={navigation}
         />
+
         <Button
+          style={styles.btn}
           title="Enviar localização"
           onPress={() => handleLocationPress(address)}
         />
-        <Button
-          title="Mostrar Modal"
-          onPress={handleShowModal}
-        />
-        <CustonModal
-          visible={modalVisible}
-          onClose={handleCloseModal}
-          modalText="Usuário cadastrado"
-        >
-        </CustonModal>
-    </Container>
+     
+      </Container>
+    </KeyboardAvoidingView>
+
   );
 };
 
