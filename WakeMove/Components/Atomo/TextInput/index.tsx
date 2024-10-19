@@ -5,12 +5,11 @@ interface Props {
     placeholder: string;
     value: string;
     onChangeText: (text: string) => void;
-    onBlur?: () => void;
     error?: string;
     label?: string;
 }
 
-export const Input: React.FC<Props> = ({ placeholder, value, onChangeText, onBlur, error, label }) => {
+export const Input: React.FC<Props> = ({ placeholder, value, onChangeText, error, label }) => {
     return (
         <View style={styles.container}>
             {label && <Text style={styles.label}>{label}</Text>}
@@ -19,7 +18,6 @@ export const Input: React.FC<Props> = ({ placeholder, value, onChangeText, onBlu
                 placeholder={placeholder}
                 onChangeText={onChangeText}
                 value={value}
-                onBlur={onBlur}
             />
             {error && <Text style={styles.errorText}>{error}</Text>}
         </View>

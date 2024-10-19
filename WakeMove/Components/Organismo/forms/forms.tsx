@@ -9,6 +9,7 @@ import Field from '@/Components/molecula/Fields';
 import { Btn } from "@/Components/Atomo/Button/index";
 import { styles } from "@/Components/Organismo/forms/stylesForms"
 import { CustonModal } from '@/Components/Organismo/alert/index';
+import {BackButton} from "@/Components/Atomo/backButton/index"
 
 interface FormularioProps {
   tipo: 'Login' | 'NovoCadastro';
@@ -92,6 +93,10 @@ const Formulario: React.FC<FormularioProps> = ({ tipo, navigation }) => {
             onPress={handleSubmit(handleSignIn)}
           />
         </View>
+        <BackButton
+          caminho="Home"
+          navigation={navigation}
+        />
       </View>
     );
 
@@ -167,11 +172,16 @@ const Formulario: React.FC<FormularioProps> = ({ tipo, navigation }) => {
           </CustonModal>
 
           <NavButton
+            style={styles}
             caminho="Home"
             label="Voltar"
             navigation={navigation}
           />
         </View>
+        <BackButton
+          caminho="Home"
+          navigation={navigation}
+        />
       </View>
     );
   }

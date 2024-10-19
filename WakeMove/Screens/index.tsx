@@ -33,11 +33,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       />
       <NavButton
         style={styles.btn}
+        caminho="Favorite"
+        label="Favoritos"
+        navigation={navigation}
+      />
+      <NavButton
+        style={styles.btn}
         caminho="Cadastro"
         label="Cadastro"
         navigation={navigation}
       />
-
     </Container>
   );
 };

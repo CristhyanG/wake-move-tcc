@@ -10,12 +10,13 @@ export const btnStyles = StyleSheet.create({
         marginTop: 30,
     },
     btn:{
-        backgroundColor: '#8F8F8F',
-        padding: 10,
-        borderRadius: 5,
+        backgroundColor: '#333',
+        padding: 15,
+        borderRadius: 25,
+        alignItems: 'center',
     },
     title:{
-        color: "#fff",
-        fontSize: 16,
+        color: '#fff',
+        fontSize: 18,
     }
 });

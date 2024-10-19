@@ -12,12 +12,13 @@ export const styles = StyleSheet.create({
         marginTop: 10
     },
     textInput: {
-        height: 45,
-        width: 325,
+        height: 40,
         borderColor: '#ccc',
         borderWidth: 1,
+        borderRadius: 4,
         paddingHorizontal: 10,
-        borderRadius: 20,
+        backgroundColor: '#fff',
+        minWidth: 200
     },
     inputError: {
         borderColor: '#00f',

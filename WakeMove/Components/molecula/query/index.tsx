@@ -4,7 +4,6 @@ import { Alert } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useAddress } from "@/Components/AddressContext";
 import { useGeocode } from '@/Components/GeocodeProvider';
-import {styles} from "./styles"
 
 interface QueryProps {
     navigation: StackNavigationProp<any>;
@@ -40,7 +39,6 @@ export const Query = ({navigation, query}:QueryProps) => {
             }}
             query={query}
             fetchDetails={true}
-            styles={styles.input}
         />
     )
 }

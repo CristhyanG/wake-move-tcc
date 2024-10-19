@@ -18,7 +18,7 @@ interface SeacrchProps {
 export const SeacrhView = ({ navigation, query }: SeacrchProps) => {
     return (
         <View style={styles.searchView}>
-            <Query navigation={navigation} query={query} />
+            <Query navigation={navigation} query={query}/>
             <Lupa
                 navigation={navigation}
                 caminho="Location"
