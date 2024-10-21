@@ -4,12 +4,15 @@ import { initializeApp } from "firebase/app";
 interface AddNewFavorite {
   Ponto_A: string;
   Fate: string;
+  data: any;
 }
 const firebaseConfig = {
-    apiKey: "AIzaSyBH9c1JNyktUuTwn9D58byBU1zJwFXfpqQ",
-    authDomain: "ex--routerdb.firebaseapp.com",
-    projectId: "ex--routerdb"
-  
+  apiKey: "AIzaSyDBY2Etu9eyabqkkw88PvShpwGVuNtNGXk",
+  authDomain: "wakemove-7ef15.firebaseapp.com",
+  projectId: "wakemove-7ef15",
+  storageBucket: "wakemove-7ef15.appspot.com",
+  messagingSenderId: "1066857242896",
+  appId: "1:1066857242896:web:a8b2937210a1c0596cc595"
   };
   
   const app = initializeApp(firebaseConfig);
@@ -18,7 +21,7 @@ const firebaseConfig = {
 
   const userCollectionRef = collection(db, "Usuários");
 
-  export async function addUser(data) {
+  export async function addUser(data: AddNewFavorite) {
         try {
           const docRef = await addDoc(userCollectionRef, data);
           return docRef.id;
@@ -35,21 +38,16 @@ const firebaseConfig = {
         console.error("Erro ao obter os documentos: ", error);
         }
     };
+
+    export const addNewFavorite = collection(db,"Favorite")
+    
     export async function addFavorite(data: AddNewFavorite) {
       try {
-        console.log("Tentando adicionar a rota:", data); // Log para verificar os dados
-        const docRef = await addDoc(collection(db, 'Favorite'), data);
-        console.log("Documento adicionado com ID: ", docRef.id); // Log para verificar o ID do documento
+        console.log("Tentando adicionar a rota:", data); 
+        const docRef = await addDoc (addNewFavorite, data);
+        console.log("Documento adicionado com ID: ", docRef.id); 
         return docRef.id;
       } catch (error) {
         console.error("Erro ao adicionar nova rota", error);
       }
     }
-    
-        
-    
-  
-  
-   
-    
-  

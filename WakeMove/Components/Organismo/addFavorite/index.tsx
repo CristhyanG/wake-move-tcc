@@ -11,11 +11,11 @@ interface addFavoriteProps {
     initialFate?: string
 }
 
-const AddFavorite = ({ initialPointA = '', initialFate = '' }: addFavoriteProps) => {
+const AddFavorite = () => {
 
     const [isVisible, setIsVisible] = useState(false)
-    const [pointA, setPointA] = useState(initialPointA)
-    const [fate, setFate] = useState(initialFate)
+    const [pointA, setPointA] = useState('')
+    const [fate, setFate] = useState('')
     const [modalVisible, setModalVisible] = useState(false)
 
     const handleShowModal = () => {
@@ -29,7 +29,7 @@ const AddFavorite = ({ initialPointA = '', initialFate = '' }: addFavoriteProps)
     const addNewRoute = async () => {
         if (pointA && fate) {
             try {
-                const data = { Ponto_A: pointA, Fate: fate };
+                const data = { Point_A: pointA, Fate: fate };
                 await addFavorite(data);
                 setIsVisible(false)
                 setPointA('');
@@ -85,7 +85,7 @@ const AddFavorite = ({ initialPointA = '', initialFate = '' }: addFavoriteProps)
                 style={styles.openModal}
                 onPress={() => { setIsVisible(true) }}
             >
-                <Text style={styles.titleBtn}>Adicionar Rota   📝</Text>
+                <Text style={styles.titleBtn}> Adicionar Rota   📝</Text>
             </Pressable>
         </View>
     )
