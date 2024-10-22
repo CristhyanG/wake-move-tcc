@@ -15,14 +15,6 @@ interface HomeScreenProps {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
-  const query = {
-    key: 'AIzaSyBVrTs2yDlY96RSXS87DbMSO4QYbHP-sXY',
-    language: 'pt-BR',
-    types: 'address',
-    components: 'country:br'
-  }
-
-
   return (
     <Container>
       <CustomTitle>Wake Move</CustomTitle>

@@ -13,7 +13,7 @@ interface SearchProps {
 export const SearchView: React.FC<SearchProps> = ({ navigation }) => {
     return (
         <View style={styles.searchView}>
-            <Query navigation={navigation} />
+            <Query />
             <Lupa
                 navigation={navigation}
                 caminho="Location"

@@ -11,7 +11,7 @@ interface addFavoriteProps {
     initialFate?: string
 }
 
-const AddFavorite = ({ initialPointA = '', initialFate = '' }: addFavoriteProps) => {
+export const AddFavorite = ({ initialPointA = '', initialFate = '' }: addFavoriteProps) => {
 
     const [isVisible, setIsVisible] = useState(false)
     const [pointA, setPointA] = useState(initialPointA)
@@ -91,4 +91,4 @@ const AddFavorite = ({ initialPointA = '', initialFate = '' }: addFavoriteProps)
     )
 }
 
-export default AddFavorite
+export default AddFavorite;
