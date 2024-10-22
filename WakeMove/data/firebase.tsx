@@ -1,6 +1,10 @@
 import{ getDocs, getFirestore, collection, addDoc } from 'firebase/firestore';
 import { initializeApp } from "firebase/app";
 
+interface AddNewFavorite {
+  Ponto_A: string;
+  Fate: string;
+}
 const firebaseConfig = {
     apiKey: "AIzaSyBH9c1JNyktUuTwn9D58byBU1zJwFXfpqQ",
     authDomain: "ex--routerdb.firebaseapp.com",
@@ -31,6 +35,17 @@ const firebaseConfig = {
         console.error("Erro ao obter os documentos: ", error);
         }
     };
+    export async function addFavorite(data: AddNewFavorite) {
+      try {
+        console.log("Tentando adicionar a rota:", data); // Log para verificar os dados
+        const docRef = await addDoc(collection(db, 'Favorite'), data);
+        console.log("Documento adicionado com ID: ", docRef.id); // Log para verificar o ID do documento
+        return docRef.id;
+      } catch (error) {
+        console.error("Erro ao adicionar nova rota", error);
+      }
+    }
+    
         
     
   

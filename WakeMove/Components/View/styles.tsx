@@ -2,10 +2,14 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
     content: {
-        paddingTop: 20,
-        paddingHorizontal: 50,
-        borderRadius: 3,
-        shadowColor: '#000',    // Cor da borda shadow
-        elevation: 1, // Efeito de impressão da borda
+        width: '80%',
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 5,
     }
 })

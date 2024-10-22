@@ -1,22 +1,23 @@
 import React from "react";
-import { Input } from "@/Components/Atomo/TextInput";
+import { Query } from "@/Components/molecula/query/index"
 import { Lupa } from "@/Components/Atomo/iconLupa";
 import { View } from "react-native";
 import { styles } from "./styles"
+import { StackNavigationProp } from "@react-navigation/stack";
 
-interface SeacrchProps {
-    value: any
-    onChangeText: (string: any) => void
+interface SearchProps {
+    navigation: StackNavigationProp<any>
+ 
 }
 
-export const SeacrhView = ({ value, onChangeText }: SeacrchProps) => {
+export const SearchView: React.FC<SearchProps> = ({ navigation }) => {
     return (
         <View style={styles.searchView}>
-            <Input
-                placeholder="Para onde vamos?"
-                value={value}
-                onChangeText={onChangeText}
-            /><Lupa/>
+            <Query />
+            <Lupa
+                navigation={navigation}
+                caminho="Location"
+            />
         </View>
     )
 }

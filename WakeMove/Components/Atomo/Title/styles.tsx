@@ -3,9 +3,9 @@ import { StyleSheet, Dimensions } from "react-native";
 const { width } = Dimensions.get('window')
 export const styles = StyleSheet.create({
     title:{
-        fontSize: 35,
+        fontSize: 30,
         fontWeight: 'bold',
-        marginBottom: width *0.05,
+        marginBottom: 20,
         color: '#333',
     }
 })

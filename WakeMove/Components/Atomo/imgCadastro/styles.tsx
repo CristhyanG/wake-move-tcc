@@ -6,6 +6,6 @@ export const styles = StyleSheet.create({
     imgCad:{
         width: 100,
         height: 100,
-        marginBottom: 30,
+        marginBottom: 20,
     }
 })

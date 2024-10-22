@@ -5,6 +5,5 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         marginBottom: 20,
-        maxHeight: 60
     }
 })
