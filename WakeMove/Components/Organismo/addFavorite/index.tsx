@@ -4,17 +4,16 @@ import { Modal, Pressable, Text, View, Alert } from "react-native";
 import { styles } from './styles'
 import { Input } from "@/Components/Atomo/TextInput";
 import { CustonModal } from "../alert";
+import { string } from "yup";
 
 interface addFavoriteProps {
-    visible: boolean
-    initialPointA?: string
-    initialFate?: string
+    onAdd: (data: {[key: string]: string}) => void
 }
 
-const AddFavorite = () => {
+const AddFavorite = ({onAdd}: addFavoriteProps) => {
 
     const [isVisible, setIsVisible] = useState(false)
-    const [pointA, setPointA] = useState('')
+    const [match, setMatch] = useState('')
     const [fate, setFate] = useState('')
     const [modalVisible, setModalVisible] = useState(false)
 
@@ -26,13 +25,20 @@ const AddFavorite = () => {
         setModalVisible(false)
     }
 
-    const addNewRoute = async () => {
-        if (pointA && fate) {
+    const handleAdd = () =>{
+        onAdd({match, fate});
+        setIsVisible(false)
+        setMatch('')
+        setFate('')
+    }
+
+     const addNewRoute = async () => {
+        if (match && fate) {
             try {
-                const data = { Point_A: pointA, Fate: fate };
+                const data = { Match: match, Fate: fate };
                 await addFavorite(data);
                 setIsVisible(false)
-                setPointA('');
+                setMatch('');
                 setFate('');
                 console.log("Rota adicionada com sucesso!");
             } catch (error) {
@@ -57,8 +63,8 @@ const AddFavorite = () => {
                 <View style={styles.modalContainer}>
                     <Text style={styles.titleBtn}> Adicione a nova rota </Text>
                     <Input
-                        onChangeText={setPointA}
-                        value={pointA}
+                        onChangeText={setMatch}
+                        value={match}
                         placeholder="Digite seu ponto de partida"
                     />
                     <Input

@@ -1,22 +1,23 @@
 import React, {useState} from "react";
-import { View } from "react-native";
-import { addNewFavorite } from "@/data/firebase"; 
-import { collection } from "firebase/firestore";
+import { View, Pressable, Text } from "react-native";
+import {styles} from "./styles"
 
-export const AddButton = ({addNewButton}) =>{
+interface Props{
+    data: {[key: string]: string}
+}
+
+export const AddButton = ({data}: Props) =>{
 
     const [newButton, setNewButton] = useState('')
 
-    const onSubmit = async() => {
-        if(newButton.trim()!==(''))
-            const docRef = await addNewFavorite(db,collection('Favorite')).add({
-                label: newButton
-        })
-    }
-
     return(
         <View>
-
+            <Pressable
+                style={styles.btn}
+                onPress={()=>console.log(data)}
+            >
+                <Text>{data.descrição}</Text>
+            </Pressable>
         </View>
     )
 }
