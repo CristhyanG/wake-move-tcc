@@ -1,4 +1,4 @@
-import{ getDocs, getFirestore, collection, addDoc } from 'firebase/firestore';
+import{ getDocs, getFirestore, collection, addDoc, deleteDoc, doc } from 'firebase/firestore';
 import { initializeApp } from "firebase/app";
 
 interface AddNewFavorite {
@@ -6,6 +6,11 @@ interface AddNewFavorite {
   Fate: string;
   data: any;
 }
+
+interface RmFavoriteProps{
+  value: string
+}
+
 const firebaseConfig = {
   apiKey: "AIzaSyDBY2Etu9eyabqkkw88PvShpwGVuNtNGXk",
   authDomain: "wakemove-7ef15.firebaseapp.com",
@@ -50,4 +55,18 @@ const firebaseConfig = {
       } catch (error) {
         console.error("Erro ao adicionar nova rota", error);
       }
+    };
+
+    export const rmFavoriteCollection = collection(db, 'Favorite');
+    
+    export async function RmButton(value) {
+      try {
+        const docRef = doc(rmFavoriteCollection, value); // Cria uma referência ao documento dentro da coleção
+        await deleteDoc(docRef); // Exclui o documento
+        console.log('Campo removido com ID: ', value);
+        return value;
+      } catch (error) {
+        console.error('Erro ao remover rota', error);
+      }
     }
+    

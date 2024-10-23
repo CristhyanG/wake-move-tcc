@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { addFavorite } from "@/data/firebase";
-import { Modal, Pressable, Text, View, Alert } from "react-native";
+import { Modal, Pressable, Text, View } from "react-native";
 import { styles } from './styles'
 import { Input } from "@/Components/Atomo/TextInput";
 import { CustonModal } from "../alert";
-import { string } from "yup";
 
 interface addFavoriteProps {
-    onAdd: (data: {[key: string]: string}) => void
+    onAdd: (data: { [key: string]: string }) => void
 }
 
-const AddFavorite = ({onAdd}: addFavoriteProps) => {
+const AddFavorite = ({ onAdd }: addFavoriteProps) => {
 
     const [isVisible, setIsVisible] = useState(false)
     const [match, setMatch] = useState('')
@@ -21,25 +20,23 @@ const AddFavorite = ({onAdd}: addFavoriteProps) => {
         setModalVisible(true)
     }
 
-    const handleCloseModal = () =>{
+    const handleCloseModal = () => {
         setModalVisible(false)
     }
 
-    const handleAdd = () =>{
-        onAdd({match, fate});
+    const handleAdd = (data: { match: string, fate: string }) => {
+        onAdd(data);
         setIsVisible(false)
         setMatch('')
         setFate('')
     }
 
-     const addNewRoute = async () => {
+    const addNewRoute = async () => {
         if (match && fate) {
             try {
                 const data = { Match: match, Fate: fate };
                 await addFavorite(data);
-                setIsVisible(false)
-                setMatch('');
-                setFate('');
+                handleAdd({ match, fate });
                 console.log("Rota adicionada com sucesso!");
             } catch (error) {
                 console.log("Erro ao adicionar rota aos favoritos", error);
@@ -53,7 +50,6 @@ const AddFavorite = ({onAdd}: addFavoriteProps) => {
         <View style={styles.contentContainer}>
             <Modal
                 animationType="slide"
-                // Determina se o modal vai preencher a visualização inteira
                 transparent={true}
                 visible={isVisible}
                 onRequestClose={() => {
@@ -74,17 +70,16 @@ const AddFavorite = ({onAdd}: addFavoriteProps) => {
                     />
                     <Pressable
                         style={styles.modalBtn}
-
-                        onPress={addNewRoute}/*função para adicionar dados no banco firestore */
+                        onPress={addNewRoute}
                     >
                         <Text style={styles.titleBtn}> Adicionar </Text>
+                    </Pressable>
                     <CustonModal
                         visible={modalVisible}
                         onClose={handleCloseModal}
                         closeText="OK"
                         modalText="Preencha todos os campos"
                     />
-                    </Pressable>
                 </View>
             </Modal>
             <Pressable
@@ -97,4 +92,4 @@ const AddFavorite = ({onAdd}: addFavoriteProps) => {
     )
 }
 
-export default AddFavorite
+export default AddFavorite;

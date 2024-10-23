@@ -16,7 +16,7 @@ export const AddButton = ({data}: Props) =>{
                 style={styles.btn}
                 onPress={()=>console.log(data)}
             >
-                <Text>{data.descrição}</Text>
+                <Text>{data.match} - {data.fate}</Text>
             </Pressable>
         </View>
     )
