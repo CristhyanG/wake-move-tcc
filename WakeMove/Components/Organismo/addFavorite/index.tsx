@@ -1,20 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { addFavorite } from "@/data/firebase";
 import { Modal, Pressable, Text, View } from "react-native";
 import { styles } from './styles'
 import { Input } from "@/Components/Atomo/TextInput";
 import { CustonModal } from "../alert";
+import { snapshotEqual } from "firebase/firestore";
 
-interface addFavoriteProps {
-    onAdd: (data: { [key: string]: string }) => void
-}
 
-const AddFavorite = ({ onAdd }: addFavoriteProps) => {
+
+const AddFavorite = () => {
 
     const [isVisible, setIsVisible] = useState(false)
     const [match, setMatch] = useState('')
     const [fate, setFate] = useState('')
     const [modalVisible, setModalVisible] = useState(false)
+    const [route, setRoute] = useState ([])
 
     const handleShowModal = () => {
         setModalVisible(true)
@@ -24,20 +24,17 @@ const AddFavorite = ({ onAdd }: addFavoriteProps) => {
         setModalVisible(false)
     }
 
-    const handleAdd = (data: { match: string, fate: string }) => {
-        onAdd(data);
-        setIsVisible(false)
-        setMatch('')
-        setFate('')
-    }
-
     const addNewRoute = async () => {
         if (match && fate) {
             try {
                 const data = { Match: match, Fate: fate };
                 await addFavorite(data);
-                handleAdd({ match, fate });
+                setMatch('')
+                setFate('')
                 console.log("Rota adicionada com sucesso!");
+                const routeList = useEffect(()=>{
+                    
+                })
             } catch (error) {
                 console.log("Erro ao adicionar rota aos favoritos", error);
             }

@@ -1,6 +1,6 @@
 import React,{useState} from "react";
 import { View, Pressable, Text } from "react-native";
-import { rmFavorite } from "@/data/firebase";
+import { rmFavoriteCollection } from "@/data/firebase";
 import { CustonModal } from "@/Components/Organismo/alert";
 import {styles} from "./styles"
 
@@ -28,7 +28,6 @@ export const RmFavorite = () =>{
         if(match && fate){
             try{
                 const value = {Match: match , Fate: fate}
-                await rmFavorite(value),
                 handleRmfavorite({match, fate})
             }
             catch (error) {

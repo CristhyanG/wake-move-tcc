@@ -1,10 +1,11 @@
-import{ getDocs, getFirestore, collection, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import{ getDocs, getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
 import { initializeApp } from "firebase/app";
 
 interface AddNewFavorite {
   Ponto_A: string;
   Fate: string;
   data: any;
+  callback: any
 }
 
 interface RmFavoriteProps{
@@ -44,6 +45,8 @@ const firebaseConfig = {
         }
     };
 
+    // Adicionando favorito
+
     export const addNewFavorite = collection(db,"Favorite")
     
     export async function addFavorite(data: AddNewFavorite) {
@@ -56,6 +59,27 @@ const firebaseConfig = {
         console.error("Erro ao adicionar nova rota", error);
       }
     };
+
+
+    // Retornando dados do Favorito
+    
+export const viewNewFavorite = collection(db,"Favorite")
+
+export async function viewFavorite(callback) {
+  try{
+    const unsubscribe = onSnapshot( viewNewFavorite, (snapshot) =>{
+      const favorites = snapshot.docs.map(doc=>({
+        id: doc.id,
+        ...doc.data()
+      }));
+      callback(favorites);
+    })
+  }catch(error){
+    console.error("Erro ao retornar dados", error)
+  }
+}
+
+    // Removendo Favorito
 
     export const rmFavoriteCollection = collection(db, 'Favorite');
     

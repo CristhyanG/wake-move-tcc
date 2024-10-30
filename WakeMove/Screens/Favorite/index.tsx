@@ -6,21 +6,11 @@ import { Container } from "@/Components/container";
 import { AddButton } from "@/Components/Atomo/addButton";
 
 export const FavoriteScreen = () => {
-    const [dados, setDados] = useState<{ [key: string]: string }[]>([]);
-
-    const handleAdd = (data: { [key: string]: string }) => {
-        setDados((prevDados) => [...prevDados, data]);
-    };
 
     return (
         <Container>
             <CustomTitle> Favoritos </CustomTitle>
-            <AddFavorite onAdd={handleAdd} />
-            <View>
-                {dados.map((data, index) => (
-                    <AddButton key={index} data={data} />
-                ))}
-            </View>
+            <AddFavorite/>
         </Container>
     );
 }
