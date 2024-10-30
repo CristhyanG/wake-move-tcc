@@ -6,9 +6,7 @@ import { Input } from "@/Components/Atomo/TextInput";
 import { CustonModal } from "../alert";
 import { snapshotEqual } from "firebase/firestore";
 
-
-
-const AddFavorite = () => {
+export const AddFavorite = () => {
 
     const [isVisible, setIsVisible] = useState(false)
     const [match, setMatch] = useState('')

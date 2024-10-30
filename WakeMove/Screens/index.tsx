@@ -5,7 +5,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import NavButton from "@/Components/Atomo/navButton";
 import { styles } from "@/Components/Atomo/navButton/styles";
 import { Container } from '@/Components/container/index';
-import { SeacrhView } from "@/Components/molecula/SeacrhView/index"
+import { SearchView } from "@/Components/molecula/SeacrhView/index"
 import 'react-native-get-random-values';
 
 
@@ -15,20 +15,12 @@ interface HomeScreenProps {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
-  const query = {
-    key: 'AIzaSyBVrTs2yDlY96RSXS87DbMSO4QYbHP-sXY',
-    language: 'pt-BR',
-    types: 'address',
-    components: 'country:br'
-  }
-
-
   return (
     <Container>
       <CustomTitle>Wake Move</CustomTitle>
       <ImgIndex />
-      <SeacrhView
-        query={query}
+
+      <SearchView
         navigation={navigation}
       />
       <NavButton

@@ -5,20 +5,15 @@ import { View } from "react-native";
 import { styles } from "./styles"
 import { StackNavigationProp } from "@react-navigation/stack";
 
-interface SeacrchProps {
+interface SearchProps {
     navigation: StackNavigationProp<any>
-    query: {
-        key: string,
-        language: string
-        types: string
-        components: string
-    }
+ 
 }
 
-export const SeacrhView = ({ navigation, query }: SeacrchProps) => {
+export const SearchView: React.FC<SearchProps> = ({ navigation }) => {
     return (
         <View style={styles.searchView}>
-            <Query navigation={navigation} query={query}/>
+            <Query />
             <Lupa
                 navigation={navigation}
                 caminho="Location"
