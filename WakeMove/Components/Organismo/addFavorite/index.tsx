@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { addFavorite } from "@/data/firebase";
+import { addFavorite, RmButton, viewFavorite } from "@/data/firebase";
 import { Modal, Pressable, Text, View } from "react-native";
 import { styles } from './styles'
 import { Input } from "@/Components/Atomo/TextInput";
 import { CustonModal } from "../alert";
-import { snapshotEqual } from "firebase/firestore";
+import { AddButton } from "@/Components/Atomo/addButton";
+import Field from "@/Components/molecula/Fields";
+import { FieldValue } from "firebase/firestore";
+
 
 export const AddFavorite = () => {
 
@@ -12,7 +15,7 @@ export const AddFavorite = () => {
     const [match, setMatch] = useState('')
     const [fate, setFate] = useState('')
     const [modalVisible, setModalVisible] = useState(false)
-    const [route, setRoute] = useState ([])
+    const [routes, setRoutes] = useState([])
 
     const handleShowModal = () => {
         setModalVisible(true)
@@ -22,6 +25,15 @@ export const AddFavorite = () => {
         setModalVisible(false)
     }
 
+    useEffect(() => {
+        const unsubscribe = viewFavorite((favorites) => {
+            setRoutes(favorites);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+
     const addNewRoute = async () => {
         if (match && fate) {
             try {
@@ -30,9 +42,6 @@ export const AddFavorite = () => {
                 setMatch('')
                 setFate('')
                 console.log("Rota adicionada com sucesso!");
-                const routeList = useEffect(()=>{
-                    
-                })
             } catch (error) {
                 console.log("Erro ao adicionar rota aos favoritos", error);
             }
@@ -40,6 +49,15 @@ export const AddFavorite = () => {
             handleShowModal()
         }
     }
+    const remolveButton = async (id) => {
+        try {
+            await RmButton(id);
+            setRoutes((prevRoutes) => prevRoutes.filter((route) => route.id !== id));
+            console.log("Rota removida com sucesso")
+        }catch (error){
+            console.log("Erro ao deletar a rota", error)
+        }
+    };
 
     return (
         <View style={styles.contentContainer}>
@@ -77,6 +95,10 @@ export const AddFavorite = () => {
                     />
                 </View>
             </Modal>
+            <AddButton
+                routes={routes}
+                onRemove={remolveButton}
+            />
             <Pressable
                 style={styles.openModal}
                 onPress={() => { setIsVisible(true) }}
