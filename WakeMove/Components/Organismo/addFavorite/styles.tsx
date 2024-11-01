@@ -1,18 +1,15 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-    openModal:{
-        borderRadius: 20,
-        backgroundColor: '#ccc',
-        padding: 15,
-        width: 300,
-        alignItems: 'center'
-    },
     contentContainer:{
-        flex: 1,
-        justifyContent: 'center',
+        paddingTop: 20,
+    },
+    openModal:{
         alignItems: 'center',
-        marginTop: 22,
+        backgroundColor: '#4CAF50',
+        padding: 15,
+        borderRadius: 10,
+        marginTop: 20,
     },
     modalContainer:{
         margin: 20,
@@ -30,11 +27,12 @@ export const styles = StyleSheet.create({
         elevation: 5,
     },
     modalBtn:{
-        margin: 10,
-        backgroundColor: "#2196F3",
-        borderRadius: 20,
+        backgroundColor: '#4CAF50',
         padding: 10,
-        elevation: 2,
+        borderRadius: 10,
+        marginTop: 10,
+        width: '80%',
+        alignItems: 'center',
     }, 
     titleBtn:{
         margin: 5,

@@ -5,9 +5,7 @@ import { styles } from './styles'
 import { Input } from "@/Components/Atomo/TextInput";
 import { CustonModal } from "../alert";
 import { AddButton } from "@/Components/Atomo/addButton";
-import Field from "@/Components/molecula/Fields";
-import { FieldValue } from "firebase/firestore";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const AddFavorite = () => {
 
@@ -30,7 +28,11 @@ export const AddFavorite = () => {
             setRoutes(favorites);
         });
 
-        return () => unsubscribe();
+        return () => {
+            if (typeof unsubscribe === 'function') {
+                unsubscribe();
+            }
+        };
     }, []);
 
 
@@ -54,51 +56,52 @@ export const AddFavorite = () => {
             await RmButton(id);
             setRoutes((prevRoutes) => prevRoutes.filter((route) => route.id !== id));
             console.log("Rota removida com sucesso")
-        }catch (error){
+        } catch (error) {
             console.log("Erro ao deletar a rota", error)
         }
     };
 
     return (
         <View style={styles.contentContainer}>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={isVisible}
-                onRequestClose={() => {
-                    setIsVisible(!isVisible);
-                }}
-            >
-                <View style={styles.modalContainer}>
-                    <Text style={styles.titleBtn}> Adicione a nova rota </Text>
-                    <Input
-                        onChangeText={setMatch}
-                        value={match}
-                        placeholder="Digite seu ponto de partida"
-                    />
-                    <Input
-                        onChangeText={setFate}
-                        value={fate}
-                        placeholder="Digite seu ponto de chegada"
-                    />
-                    <Pressable
-                        style={styles.modalBtn}
-                        onPress={addNewRoute}
-                    >
-                        <Text style={styles.titleBtn}> Adicionar </Text>
-                    </Pressable>
-                    <CustonModal
-                        visible={modalVisible}
-                        onClose={handleCloseModal}
-                        closeText="OK"
-                        modalText="Preencha todos os campos"
-                    />
-                </View>
-            </Modal>
-            <AddButton
-                routes={routes}
-                onRemove={remolveButton}
-            />
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={isVisible}
+                    onRequestClose={() => {
+                        setIsVisible(!isVisible);
+                    }}
+                    
+                >
+                    <View style={styles.modalContainer}>
+                        <Text style={styles.titleBtn}> Adicione a nova rota </Text>
+                        <Input
+                            onChangeText={setMatch}
+                            value={match}
+                            placeholder="Digite seu ponto de partida"
+                        />
+                        <Input
+                            onChangeText={setFate}
+                            value={fate}
+                            placeholder="Digite seu ponto de chegada"
+                        />
+                        <Pressable
+                            style={styles.modalBtn}
+                            onPress={addNewRoute}
+                        >
+                            <Text style={styles.titleBtn}> Adicionar </Text>
+                        </Pressable>
+                        <CustonModal
+                            visible={modalVisible}
+                            onClose={handleCloseModal}
+                            closeText="OK"
+                            modalText="Preencha todos os campos"
+                        />
+                    </View>
+                </Modal>
+                <AddButton
+                    routes={routes}
+                    onRemove={remolveButton}
+                />
             <Pressable
                 style={styles.openModal}
                 onPress={() => { setIsVisible(true) }}
@@ -110,3 +113,4 @@ export const AddFavorite = () => {
 }
 
 export default AddFavorite;
+
