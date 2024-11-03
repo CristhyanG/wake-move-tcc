@@ -1,4 +1,9 @@
-import React, { createContext, useState, ReactNode, useContext } from 'react';
+import React, { 
+  createContext,
+  useState, 
+  ReactNode, 
+  useContext 
+} from 'react';
 
 interface Location {
   latitude: number;
@@ -39,8 +44,9 @@ export const GeocodeProvider: React.FC<{ children: ReactNode }> = ({ children })
       } else {
         return { success: false, message: 'Unknown error' };
       }
-    } catch (e) {
-      return { success: false, message: e.message };
+    } catch (e: unknown) {
+      const errorMessage = e instanceof Error ? e.message: 'Unknown error';
+      return { success: false, message: errorMessage };
     }
   };
 

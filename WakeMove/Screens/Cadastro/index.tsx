@@ -1,7 +1,7 @@
 import React from 'react'; // Importando React
 import Formulario from '@/Components/Organismo/forms/forms';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { Container } from '@/Components/container/index';
+import { Container } from '@/Components/Atomo/container/index';
 import { ImgCad } from '@/Components/Atomo/imgCadastro';
 import { Content } from '@/Components/View/index';
 import { CustomTitle } from '@/Components/Atomo/Title/index'

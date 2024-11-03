@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from '../Screens/';
+import HomeScreen from '@/Screens/Home';
 import CadastroScreen from '../Screens/Cadastro';
 import LocationScreen from '@/Screens/Location';
 import { StatusBar } from 'react-native';
-import { AddressProvider } from '@/Components/AddressContext';
-import { GeocodeProvider } from '@/Components/GeocodeProvider';
+import { AddressProvider } from '@/API/Context/AddressContext';
+import { GeocodeProvider } from '@/API/Google/Geocoding/Provider';
 import { FavoriteScreen } from '@/Screens/Favorite';
 
 const Stack = createStackNavigator();
