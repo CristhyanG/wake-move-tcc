@@ -1,8 +1,8 @@
 import React from "react";
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Alert } from "react-native";
-import { useFinalAddress, useCurrentAddress } from "@/API/Context/AddressContext";
-import { useGeocode } from '@/API/Google/Geocoding/Provider';
+import { useFinalAddress, useCurrentAddress } from "@/Api/Context/AddressContext";
+import { useGeocode } from '@/Api/Google/Geocoding/Context';
 
 interface QueryProps {
     type: string;
@@ -42,7 +42,7 @@ export const Query: React.FC<QueryProps> = ({type, page}) => {
     const renderGooglePlacesAutocomplete = (onPress: (address: string) => void): React.ReactNode => {
         return (
             <GooglePlacesAutocomplete
-                placeholder="Para onde vamos?"
+                placeholder="Digite um endereço"
                 onPress={(data, details = null) => {
                     const fullAddress = data.description;
                     onPress(fullAddress);

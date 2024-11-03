@@ -11,7 +11,8 @@ interface Location {
 }
 
 interface GeocodeContextProps {
-  locations: Location[];
+  locations: Location | null;
+  locationsHistory: Location[];
   geocodeAddress: (address: string) => Promise<{ success: boolean, message?: string }>;
 }
 
@@ -26,7 +27,9 @@ export const useGeocode = (): GeocodeContextProps => {
 };
 
 export const GeocodeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [locations, setLocations] = useState<Location[]>([]);
+
+  const [locations, setLocations] = useState<Location | null>(null);
+  const [locationsHistory, setLocationHistory] = useState<Location[]>([]);
 
   const geocodeAddress = async (address: string): Promise<{ success: boolean, message?: string }> => {
     try {
@@ -37,7 +40,11 @@ export const GeocodeProvider: React.FC<{ children: ReactNode }> = ({ children })
           latitude: result.geometry.location.lat,
           longitude: result.geometry.location.lng
         }));
-        setLocations(locs);
+
+        const newLocation = locs[0];
+        setLocations(newLocation);
+        setLocationHistory([...locationsHistory, newLocation]);
+
         return { success: true };
       } else if (data.error_message) {
         return { success: false, message: data.error_message };
@@ -51,7 +58,7 @@ export const GeocodeProvider: React.FC<{ children: ReactNode }> = ({ children })
   };
 
   return (
-    <GeocodeContext.Provider value={{ locations, geocodeAddress }}>
+    <GeocodeContext.Provider value={{ locations, locationsHistory, geocodeAddress }}>
       {children}
     </GeocodeContext.Provider>
   );
