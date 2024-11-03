@@ -2,7 +2,8 @@
 import React from "react";
 import { View, Text } from "react-native";
 import MapView, { Marker } from 'react-native-maps';
-import { useGeocode } from "@/Components/GeocodeProvider";
+import { useGeocode } from "@/API/Google/Geocoding/Provider";
+import BusStops from "@/API/Google/Places/BusStops"
         
 const LocationScreen: React.FC = () => {
   
@@ -30,6 +31,10 @@ const LocationScreen: React.FC = () => {
               title={`Result ${index + 1}`}
             />
           ))}
+          
+          <BusStops 
+          location={locations[0]}
+          />
         </MapView>
       ) : (
         <Text>Carregando localização...</Text>
