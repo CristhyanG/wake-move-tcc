@@ -38,8 +38,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       />
       <NavButton
         style={styles.btn}
-        caminho="Test"
-        label="Test"
+        caminho="FinalLocation"
+        label="Seu endereço"
         navigation={navigation}
       />
     </Container>

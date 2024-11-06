@@ -9,9 +9,6 @@ import { StatusBar } from 'react-native';
 import { AddressProvider } from '@/Api/Context/AddressContext';
 import { GeocodeProvider } from '@/Api/Google/Geocoding/Context';
 import { FavoriteScreen } from '@/Screens/Favorite';
-
-import { Test } from '@/Screens/Test';
-
 const Stack = createStackNavigator();
 
 export default function AppNavigator() {
@@ -26,7 +23,6 @@ export default function AppNavigator() {
             <Stack.Screen name="FinalLocation" component={FinalLocationScreen} />
             <Stack.Screen name="InitialLocation" component={InitialLocationScreen} />
             <Stack.Screen name="Favorite" component={FavoriteScreen} />
-            <Stack.Screen name="Test" component={Test} />
           </Stack.Navigator>
         </NavigationContainer>
       </GeocodeProvider>
