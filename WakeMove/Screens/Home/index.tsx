@@ -22,6 +22,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
       <SearchView
         page="Final"
+        caminho="FinalLocation"
         navigation={navigation}
       />
       <NavButton

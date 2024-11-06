@@ -7,11 +7,12 @@ import { StackNavigationProp } from "@react-navigation/stack";
 
 interface SearchProps {
     navigation: StackNavigationProp<any>;
-    page: string;
+    page: string,
+    caminho: string;
  
 }
 
-export const SearchView: React.FC<SearchProps> = ({ navigation, page }) => {
+export const SearchView: React.FC<SearchProps> = ({ navigation, page, caminho }) => {
     return (
         <View style={styles.searchView}>
             <Query 
@@ -20,7 +21,7 @@ export const SearchView: React.FC<SearchProps> = ({ navigation, page }) => {
             />
             <Lupa
                 navigation={navigation}
-                caminho=""
+                caminho={caminho}
             />
         </View>
     )
