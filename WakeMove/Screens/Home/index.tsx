@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { CustomTitle } from '@/Components/Atomo/Title';
 import { ImgIndex } from '@/Components/Atomo/imgIndex';
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -8,13 +8,11 @@ import { Container } from '@/Components/Atomo/container/index';
 import { SearchView } from "@/Components/molecula/SeacrhView/index"
 import 'react-native-get-random-values';
 
-
 interface HomeScreenProps {
   navigation: StackNavigationProp<any>;
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-
   return (
     <Container>
       <CustomTitle>Wake Move</CustomTitle>
@@ -25,6 +23,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         caminho="FinalLocation"
         navigation={navigation}
       />
+
       <NavButton
         style={styles.btn}
         caminho="Favorite"
@@ -39,8 +38,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       />
       <NavButton
         style={styles.btn}
-        caminho="Test"
-        label="Test"
+        caminho="InitialLocation"
+        label="Enviar dados"
         navigation={navigation}
       />
     </Container>

@@ -7,9 +7,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 
 interface SearchProps {
     navigation: StackNavigationProp<any>;
-    page: string,
+    page: string;
     caminho: string;
- 
 }
 
 export const SearchView: React.FC<SearchProps> = ({ navigation, page, caminho }) => {
@@ -17,7 +16,7 @@ export const SearchView: React.FC<SearchProps> = ({ navigation, page, caminho })
         <View style={styles.searchView}>
             <Query 
                 type="endereco"
-                page={page}
+                page={page === "Current" ? "Current" : "Final"}
             />
             <Lupa
                 navigation={navigation}

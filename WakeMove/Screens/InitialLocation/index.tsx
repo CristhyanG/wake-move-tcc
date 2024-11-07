@@ -1,84 +1,49 @@
-
 import React from "react";
-import { View, Text } from "react-native";
-import MapView, { Marker } from 'react-native-maps';
-import { useGeocode } from "@/Api/Google/Geocoding/Context";
-import BusStops from "@/Api/Google/Places/BusStops"
-        
-const InitialLocationScreen: React.FC = () => {
-  
-  const { locations, locationsHistory } = useGeocode();
+import { CustomTitle } from '@/Components/Atomo/Title';
+import { ImgIndex } from '@/Components/Atomo/imgIndex';
+import { StackNavigationProp } from "@react-navigation/stack";
+import NavButton from "@/Components/Atomo/navButton";
+import { styles } from "@/Components/Atomo/navButton/styles";
+import { Container } from '@/Components/Atomo/container/index';
+import { SearchView } from "@/Components/molecula/SeacrhView/index"
+import 'react-native-get-random-values';
 
+interface InitialLocationprops {
+  navigation: StackNavigationProp<any>;
+}
+
+const InitialLocationScreen: React.FC<InitialLocationprops> = ({ navigation }) => {
   return (
-    <View style={{ flex: 1 }}>
-      {locations ? (
-        <MapView
-          style={{ flex: 1 }}
-          initialRegion={{
-            latitude: locations.latitude,
-            longitude: locations.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        >
-          {locationsHistory.map((location, index) => (
-            <Marker
-              key={index}
-              coordinate={{ 
-                latitude: location.latitude, 
-                longitude: location.longitude
-              }}
-              title={`Result ${index + 1}`}
-            />
-          ))}
-          
-          <BusStops 
-          location={locations}
-          />
-        </MapView>
-      ) : (
-        <Text>Carregando localização...</Text>
-      )}
-    </View>
+    <Container>
+      <CustomTitle>Wake Move</CustomTitle>
+      <ImgIndex />
+
+      <SearchView
+        page="Current"
+        caminho="FinalLocation"
+        navigation={navigation}
+      />
+
+      <NavButton
+        style={styles.btn}
+        caminho="Favorite"
+        label="Favoritos"
+        navigation={navigation}
+      />
+      <NavButton
+        style={styles.btn}
+        caminho="Cadastro"
+        label="Cadastro"
+        navigation={navigation}
+      />
+      <NavButton
+        style={styles.btn}
+        caminho="FinalLocation"
+        label="Enviar dados"
+        navigation={navigation}
+      />
+    </Container>
   );
 };
 
 export default InitialLocationScreen;
-
-// import React from "react";
-// import { View, Text, Button } from "react-native";
-// import { useGeocode } from "@/Api/Google/Geocoding/Provider";
-// import { useNavigation } from "@react-navigation/native";
-
-// const LocationScreen: React.FC = () => {
-//   const { locations } = useGeocode();
-//   const navigation = useNavigation();
-
-//   const handleNewAddress = () => {
-//     navigation.navigate('Initial');
-//   };
-
-//   return (
-//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//       {locations.length > 0 ? (
-//         <>
-//           <Text>Endereço coletado com sucesso!</Text>
-//           <Button
-//             title="Pegar outro endereço"
-//             onPress={handleNewAddress}
-//           />
-//         </>
-//       ) : (
-//         <>
-//           <Text>Carregando localização...</Text>
-//           <Button
-//             title="Pegar outro endereço"
-//             onPress={handleNewAddress}
-//           />
-//         </>
-//       )}
-//     </View>
-//   );
-// };
-
-// export default LocationScreen;

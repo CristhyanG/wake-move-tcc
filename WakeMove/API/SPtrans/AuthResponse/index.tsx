@@ -51,8 +51,8 @@ export const linhaBusca =  async () => {
     }
 
 };
-export const buscaGeral = async () =>{
-    const busca= buscaTermo || '';
+export const buscaGeral = async (buscaTermo='') =>{
+    const busca = buscaTermo || '';
     try{ 
         const response = await api.get('/Parada/Buscar', {params: {termosBusca: busca }})
         console.log("OK")
