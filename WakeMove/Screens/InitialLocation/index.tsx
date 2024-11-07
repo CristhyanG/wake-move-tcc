@@ -2,8 +2,8 @@
 import React from "react";
 import { View, Text } from "react-native";
 import MapView, { Marker } from 'react-native-maps';
-import { useGeocode } from "@/Api/Google/Geocoding/Context";
-import BusStops from "@/Api/Google/Places/BusStops"
+import { useGeocode } from "@/API/Google/Geocoding/Context";
+import BusStops from "@/API/Google/Places/BusStops"
         
 const InitialLocationScreen: React.FC = () => {
   

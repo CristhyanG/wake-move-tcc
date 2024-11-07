@@ -31,8 +31,16 @@ export const styles = StyleSheet.create({
         backgroundColor: '#DB4921',
         padding: 8,
         borderRadius: 50,
+        marginBottom: 20
     },
     textDel: {
         color: "#f00",
     },
+    btnEdit:{
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#DB4921',
+        padding: 7,
+        borderRadius: 50,
+    }
 });

@@ -3,7 +3,7 @@ import { View, Pressable, Text, TouchableOpacity } from "react-native";
 import { styles } from "./styles";
 import { Ionicons } from '@expo/vector-icons';
 
-export const AddButton = ({ routes, onRemove }) => {
+export const AddButton = ({ routes, onRemove, onEdit }) => {
     return (
         <View style={styles.containerAdd}>
             {routes.map((route) => (
@@ -17,12 +17,20 @@ export const AddButton = ({ routes, onRemove }) => {
                         <Text style={styles.textAdd}>Destino:</Text>
                         <Text style={styles.textAdd}>{route.Fate}</Text>
                     </Pressable>
-                    <TouchableOpacity 
+                    <View>
+                    <TouchableOpacity
                         style={styles.btnDel}
                         onPress={() => onRemove(route.id)}
                     >
-                        <Ionicons name="trash" size={24} color="white"/>
+                        <Ionicons name="trash" size={24} color="white" />
                     </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.btnEdit}
+                        onPress={() => onEdit(route)}
+                    >
+                        <Ionicons name="pencil" size={24} color="black" />
+                    </TouchableOpacity>
+                    </View>
                 </View>
             ))}
         </View>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Query } from "@/Api/Google/Places/Query"
+import { Query } from "@/API/Google/Places/Query"
 import { Lupa } from "@/Components/Atomo/iconLupa";
 import { View } from "react-native";
 import { styles } from "./styles"
@@ -20,7 +20,7 @@ export const SearchView: React.FC<SearchProps> = ({ navigation, page }) => {
             />
             <Lupa
                 navigation={navigation}
-                caminho=""
+                caminho="FinalLocation"
             />
         </View>
     )

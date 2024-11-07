@@ -6,8 +6,8 @@ import CadastroScreen from '../Screens/Cadastro';
 import FinalLocationScreen from '@/Screens/FinalLocation';
 import InitialLocationScreen from '@/Screens/InitialLocation';
 import { StatusBar } from 'react-native';
-import { AddressProvider } from '@/Api/Context/AddressContext';
-import { GeocodeProvider } from '@/Api/Google/Geocoding/Context';
+import { AddressProvider } from '@/API/Context/AddressContext';
+import { GeocodeProvider } from '@/API/Google/Geocoding/Context';
 import { FavoriteScreen } from '@/Screens/Favorite';
 const Stack = createStackNavigator();
 

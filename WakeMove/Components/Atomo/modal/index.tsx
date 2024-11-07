@@ -1,23 +1,26 @@
 import React from "react";
-import { Modal, View } from "react-native";
-import {styles} from "./styles"
+import { Modal, View, Text, TouchableOpacity } from "react-native";
+import { styles } from "./styles"
 
-interface ModalProps{
+interface ModalProps {
     visible: boolean
     children: React.ReactNode
 }
 
-export const NewModal = ({visible, children}:ModalProps) =>{
-    return(
+export const NewModal = ({ visible, children }: ModalProps) => {
+    return (
         <Modal
             animationType="slide"
             transparent={true}
             visible={visible}
-            onRequestClose={()=>{}}
-            style={styles.custonModal}
+            onRequestClose={() => { }}
         >
-            <View>
-                {children}
+            <View style={styles.custonModal}>
+                <Text>{children}</Text>
+                <TouchableOpacity onPress={() => { }}
+                    style={styles.btn}> 
+                    <Text>Confirmar</Text> 
+                </TouchableOpacity>
             </View>
         </Modal>
     )
