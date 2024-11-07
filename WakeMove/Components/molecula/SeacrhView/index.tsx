@@ -20,7 +20,7 @@ export const SearchView: React.FC<SearchProps> = ({ navigation, page }) => {
             />
             <Lupa
                 navigation={navigation}
-                caminho="Location"
+                caminho="FinalLocation"
             />
         </View>
     )
