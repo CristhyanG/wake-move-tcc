@@ -15,7 +15,7 @@ export default function Index() {
     } else {
       // Carrega e reproduz o arquivo de som do alarme
       const { sound } = await Audio.Sound.createAsync(
-        require('../assets/Olha O Menino.mp3'),
+        require(/* inserir caminho do audio */),
         { shouldPlay: true, isLooping: true } // Configura o som para repetir indefinidamente
       );
       setSound(sound);

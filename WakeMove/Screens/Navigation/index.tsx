@@ -4,6 +4,7 @@ import MapView, { Marker, Polyline } from 'react-native-maps';
 import axios from 'axios';
 import polyline from '@mapbox/polyline'; // Importe o decodificador de polylines
 import { useGeocode } from '@/Api/Google/Geocoding/Context'; // Importe o contexto de geocodificação
+import { useFinalAddress, useCurrentAddress } from '@/Api/Context/AddressContext'; // Importe os hooks de endereço
 import BusStops from '@/Api/Google/Places/BusStops'; // Importe o componente BusStops
 
 interface BusStop {
@@ -12,8 +13,10 @@ interface BusStop {
   name: string;
 }
 
-const FinalLocationScreen = () => {
+const NavigationScreen = () => {
   const { origin, destination, locationsHistory } = useGeocode(); // Utilize o contexto de geocodificação
+  const { finalAddress } = useFinalAddress(); // Utilize o endereço final do contexto
+  const { currentAddress } = useCurrentAddress(); // Utilize o endereço atual do contexto
   const [routeCoordinates, setRouteCoordinates] = useState<{ latitude: number; longitude: number; }[]>([]);
   const initialRegion = {
     latitude: origin ? origin.latitude : -23.55052,
@@ -24,16 +27,16 @@ const FinalLocationScreen = () => {
 
   useEffect(() => {
     const fetchBusRoutes = async () => {
-      if (origin && destination) {
+      if (currentAddress && finalAddress) {
         try {
-          console.log('Origin:', origin); // Log da origem
-          console.log('Destination:', destination); // Log do destino
+          console.log('Current Address:', currentAddress); // Log do endereço atual
+          console.log('Final Address:', finalAddress); // Log do endereço final
 
           const response = await axios.get('https://maps.googleapis.com/maps/api/directions/json', {
             params: {
               key: 'AIzaSyBVrTs2yDlY96RSXS87DbMSO4QYbHP-sXY',
-              origin: `${origin.latitude},${origin.longitude}`,
-              destination: `${destination.latitude},${destination.longitude}`,
+              origin: currentAddress,
+              destination: finalAddress,
               mode: 'transit'
             }
           });
@@ -41,12 +44,22 @@ const FinalLocationScreen = () => {
           console.log('API Response:', response.data); // Log da resposta da API
 
           if (response.data.routes && response.data.routes.length > 0) {
-            const points = response.data.routes[0].overview_polyline.points;
-            const route = polyline.decode(points).map((point: number[]) => ({
+            const route = response.data.routes[0];
+            const legs = route.legs;
+
+            // Log detalhado dos modos de transporte
+            legs.forEach((leg: any) => {
+              leg.steps.forEach((step: any) => {
+                console.log('Travel Mode:', step.travel_mode);
+              });
+            });
+
+            const points = route.overview_polyline.points;
+            const decodedRoute = polyline.decode(points).map((point: number[]) => ({
               latitude: point[0],
               longitude: point[1]
             }));
-            setRouteCoordinates(route);
+            setRouteCoordinates(decodedRoute);
           } else {
             console.error('No routes found');
           }
@@ -57,7 +70,7 @@ const FinalLocationScreen = () => {
     };
 
     fetchBusRoutes();
-  }, [origin, destination]);
+  }, [currentAddress, finalAddress]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -101,4 +114,4 @@ const FinalLocationScreen = () => {
   );
 };
 
-export default FinalLocationScreen;
+export default NavigationScreen;
