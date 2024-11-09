@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '@/Screens/Home';
 import CadastroScreen from '../Screens/Cadastro';
-import FinalLocationScreen from '@/Screens/FinalLocation';
+import NavigationScreen from '@/Screens/Navigation';
 import InitialLocationScreen from '@/Screens/InitialLocation';
 import { StatusBar } from 'react-native';
 import { AddressProvider } from '@/API/Context/AddressContext';
@@ -20,7 +20,7 @@ export default function AppNavigator() {
           <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Cadastro" component={CadastroScreen} />
-            <Stack.Screen name="FinalLocation" component={FinalLocationScreen} />
+            <Stack.Screen name="Navigation" component={NavigationScreen} />
             <Stack.Screen name="InitialLocation" component={InitialLocationScreen} />
             <Stack.Screen name="Favorite" component={FavoriteScreen} />
           </Stack.Navigator>

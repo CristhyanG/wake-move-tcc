@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Marker } from 'react-native-maps';
 import axios from 'axios';
+import { Marker } from 'react-native-maps';
 
 interface BusStopProps {
   location: { latitude: number; longitude: number };
@@ -17,6 +17,11 @@ const BusStops: React.FC<BusStopProps> = ({ location }) => {
 
   useEffect(() => {
     const fetchBusStops = async () => {
+      if (!location.latitude || !location.longitude) {
+        console.error('Invalid location coordinates');
+        return;
+      }
+
       try {
         const response = await axios.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json', {
           params: {
@@ -27,14 +32,16 @@ const BusStops: React.FC<BusStopProps> = ({ location }) => {
           }
         });
 
-        const data = response.data.results.map((place: any) => ({
-          lat: place.geometry.location.lat,
-          lng: place.geometry.location.lng,
-          name: place.name
-        }));
-
-        setBusStops(data);
-        console.log('Bus stops:', data);
+        if (response.data.status === "OK") {
+          const data = response.data.results.map((place: any) => ({
+            lat: place.geometry.location.lat,
+            lng: place.geometry.location.lng,
+            name: place.name
+          }));
+          setBusStops(data);
+        } else {
+          console.error('Error fetching bus stops:', response.data.status);
+        }
       } catch (error) {
         console.error('Error fetching bus stops:', error);
       }

@@ -1,5 +1,5 @@
 import React, { 
-  createContext,
+  createContext, 
   useState, 
   ReactNode, 
   useContext 
@@ -11,9 +11,10 @@ interface Location {
 }
 
 interface GeocodeContextProps {
-  locations: Location | null;
+  origin: Location | null;
+  destination: Location | null;
   locationsHistory: Location[];
-  geocodeAddress: (address: string) => Promise<{ success: boolean, message?: string }>;
+  geocodeAddress: (address: string, type: 'origin' | 'destination') => Promise<{ success: boolean, message?: string }>;
 }
 
 const GeocodeContext = createContext<GeocodeContextProps | undefined>(undefined);
@@ -27,11 +28,11 @@ export const useGeocode = (): GeocodeContextProps => {
 };
 
 export const GeocodeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-
-  const [locations, setLocations] = useState<Location | null>(null);
+  const [origin, setOrigin] = useState<Location | null>(null);
+  const [destination, setDestination] = useState<Location | null>(null);
   const [locationsHistory, setLocationHistory] = useState<Location[]>([]);
 
-  const geocodeAddress = async (address: string): Promise<{ success: boolean, message?: string }> => {
+  const geocodeAddress = async (address: string, type: 'origin' | 'destination'): Promise<{ success: boolean, message?: string }> => {
     try {
       const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=AIzaSyBVrTs2yDlY96RSXS87DbMSO4QYbHP-sXY`);
       const data = await response.json();
@@ -42,7 +43,11 @@ export const GeocodeProvider: React.FC<{ children: ReactNode }> = ({ children })
         }));
 
         const newLocation = locs[0];
-        setLocations(newLocation);
+        if (type === 'origin') {
+          setOrigin(newLocation);
+        } else {
+          setDestination(newLocation);
+        }
         setLocationHistory([...locationsHistory, newLocation]);
 
         return { success: true };
@@ -52,13 +57,13 @@ export const GeocodeProvider: React.FC<{ children: ReactNode }> = ({ children })
         return { success: false, message: 'Unknown error' };
       }
     } catch (e: unknown) {
-      const errorMessage = e instanceof Error ? e.message: 'Unknown error';
+      const errorMessage = e instanceof Error ? e.message : 'Unknown error';
       return { success: false, message: errorMessage };
     }
   };
 
   return (
-    <GeocodeContext.Provider value={{ locations, locationsHistory, geocodeAddress }}>
+    <GeocodeContext.Provider value={{ origin, destination, locationsHistory, geocodeAddress }}>
       {children}
     </GeocodeContext.Provider>
   );

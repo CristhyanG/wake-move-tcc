@@ -5,6 +5,8 @@ import { styles } from './styles';
 import { Input } from "@/Components/Atomo/TextInput";
 import { CustonModal } from "../alert";
 import { AddButton } from "@/Components/Atomo/addButton";
+//import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export const AddFavorite = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -14,9 +16,11 @@ export const AddFavorite = () => {
   const [routes, setRoutes] = useState([]);
   const [editingRoute, setEditingRoute] = useState(null); // Estado para controlar a edição
 
+
   const handleShowModal = () => {
     setModalVisible(true);
   };
+
 
   const handleCloseModal = () => {
     setModalVisible(false);
@@ -122,6 +126,7 @@ export const AddFavorite = () => {
             closeText="OK"
             modalText="Preencha todos os campos"
           />
+          
         </View>
       </Modal>
       <AddButton
@@ -140,3 +145,4 @@ export const AddFavorite = () => {
 };
 
 export default AddFavorite;
+

@@ -4,6 +4,7 @@ import { styles } from "./styles";
 import { Ionicons } from '@expo/vector-icons';
 
 export const AddButton = ({ routes, onRemove, onEdit }) => {
+
     return (
         <View style={styles.containerAdd}>
             {routes.map((route) => (
@@ -17,6 +18,7 @@ export const AddButton = ({ routes, onRemove, onEdit }) => {
                         <Text style={styles.textAdd}>Destino:</Text>
                         <Text style={styles.textAdd}>{route.Fate}</Text>
                     </Pressable>
+                    
                     <View>
                     <TouchableOpacity
                         style={styles.btnDel}
@@ -31,8 +33,9 @@ export const AddButton = ({ routes, onRemove, onEdit }) => {
                         <Ionicons name="pencil" size={24} color="black" />
                     </TouchableOpacity>
                     </View>
+
                 </View>
             ))}
         </View>
-    )
-}
+    );
+};

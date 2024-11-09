@@ -32,10 +32,13 @@ export const styles = StyleSheet.create({
         padding: 8,
         borderRadius: 50,
         marginBottom: 20
+
+
     },
     textDel: {
         color: "#f00",
     },
+
     btnEdit:{
         alignItems: 'center',
         justifyContent: 'center',
@@ -44,3 +47,4 @@ export const styles = StyleSheet.create({
         borderRadius: 50,
     }
 });
+
