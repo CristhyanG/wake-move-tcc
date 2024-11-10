@@ -3,9 +3,9 @@ import { View } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import axios from 'axios';
 import polyline from '@mapbox/polyline'; // Importe o decodificador de polylines
-import { useGeocode } from '@/Api/Google/Geocoding/Context'; // Importe o contexto de geocodificação
-import { useFinalAddress, useCurrentAddress } from '@/Api/Context/AddressContext'; // Importe os hooks de endereço
-import BusStops from '@/Api/Google/Places/BusStops'; // Importe o componente BusStops
+import { useGeocode } from '@/API/Google/Geocoding/Context'; // Importe o contexto de geocodificação
+import { useFinalAddress, useCurrentAddress } from '@/API/Context/AddressContext'; // Importe os hooks de endereço
+import BusStops from '@/API/Google/Places/BusStops'; // Importe o componente BusStops
 
 interface BusStop {
   lat: number;

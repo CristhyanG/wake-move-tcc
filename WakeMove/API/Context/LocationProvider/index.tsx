@@ -15,7 +15,7 @@ const LocationContext = createContext<LocationObject | null>(null);
 export const LocationProvider: React.FC<Props> = ({children}) => {
     const [location, setLocation] = useState<LocationObject | null>(null);
 
-    async function permissaoUsuario() {
+     async function permissaoUsuario() {
         const { granted } = await requestForegroundPermissionsAsync();
 
         if (granted) {

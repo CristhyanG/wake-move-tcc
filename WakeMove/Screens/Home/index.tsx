@@ -20,7 +20,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
       <SearchView
         page="Final"
-        caminho="FinalLocation"
+        caminho="InitialLocation"
         navigation={navigation}
       />
 

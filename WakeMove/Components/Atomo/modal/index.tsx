@@ -5,22 +5,34 @@ import { styles } from "./styles"
 interface ModalProps {
     visible: boolean
     children: React.ReactNode
+    navigation: any
+    caminho: any,
+    onConfirm: () => void
 }
 
-export const NewModal = ({ visible, children }: ModalProps) => {
+export const NewModal = ({ visible, children, navigation, caminho, onConfirm }: ModalProps) => {
     return (
         <Modal
             animationType="slide"
-            transparent={true}
+            transparent={false}
             visible={visible}
             onRequestClose={() => { }}
         >
             <View style={styles.custonModal}>
-                <Text>{children}</Text>
-                <TouchableOpacity onPress={() => { }}
-                    style={styles.btn}> 
-                    <Text>Confirmar</Text> 
-                </TouchableOpacity>
+                <Text style={styles.title}>{children}</Text>
+                <View style={styles.contentModal}>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate(caminho)}
+                        style={styles.btn}>
+                        <Text>Cancelar</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        onPress={onConfirm}
+                        style={styles.btn}>
+                        <Text>Confirmar</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </Modal>
     )
