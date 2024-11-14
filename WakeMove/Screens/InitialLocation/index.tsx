@@ -21,7 +21,7 @@ const InitialLocationScreen: React.FC<InitialLocationprops> = ({ navigation }) =
 
       <SearchView
         page="Current"
-        caminho="FinalLocation"
+        caminho="Navigation"
         navigation={navigation}
       />
 
@@ -37,12 +37,7 @@ const InitialLocationScreen: React.FC<InitialLocationprops> = ({ navigation }) =
         label="Cadastro"
         navigation={navigation}
       />
-      <NavButton
-        style={styles.btn}
-        caminho="FinalLocation"
-        label="Enviar dados"
-        navigation={navigation}
-      />
+      
     </Container>
   );
 };

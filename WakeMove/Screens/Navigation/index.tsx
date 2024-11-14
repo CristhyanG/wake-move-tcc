@@ -1,115 +1,78 @@
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
-import MapView, { Marker, Polyline } from 'react-native-maps';
-import axios from 'axios';
-import polyline from '@mapbox/polyline'; // Importe o decodificador de polylines
-import { useGeocode } from '@/Api/Google/Geocoding/Context'; // Importe o contexto de geocodificação
-import { useFinalAddress, useCurrentAddress } from '@/Api/Context/AddressContext'; // Importe os hooks de endereço
-import BusStops from '@/Api/Google/Places/BusStops'; // Importe o componente BusStops
+import * as Notifications from 'expo-notifications';
+import { useFetchRoute } from '@/Api/Google/Directions/FetchRoutes';
+import MapViewComponent from '@/Components/molecula/MapView';
+import NotificationConfig from '@/Components/molecula/NotificationConfigure';
+import LocationTracker from '@/Components/molecula/LocationTracker';
 
-interface BusStop {
-  lat: number;
-  lng: number;
-  name: string;
-}
+const NavigationScreen: React.FC = () => {
+  const routeCoordinates = useFetchRoute();
+  const [alarmActive, setAlarmActive] = useState(false);
 
-const NavigationScreen = () => {
-  const { origin, destination, locationsHistory } = useGeocode(); // Utilize o contexto de geocodificação
-  const { finalAddress } = useFinalAddress(); // Utilize o endereço final do contexto
-  const { currentAddress } = useCurrentAddress(); // Utilize o endereço atual do contexto
-  const [routeCoordinates, setRouteCoordinates] = useState<{ latitude: number; longitude: number; }[]>([]);
-  const initialRegion = {
-    latitude: origin ? origin.latitude : -23.55052,
-    longitude: origin ? origin.longitude : -46.633308,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
+  const checkPosition = (userLatitude: number, userLongitude: number): void => {
+    if (routeCoordinates.length > 1) {
+      const penultimatePoint = routeCoordinates[routeCoordinates.length - 2];
+      const lastPoint = routeCoordinates[routeCoordinates.length - 1];
+
+      const distanceToPenultimate = getDistance(
+        userLatitude,
+        userLongitude,
+        penultimatePoint.latitude,
+        penultimatePoint.longitude
+      );
+      const distanceToLast = getDistance(
+        userLatitude,
+        userLongitude,
+        lastPoint.latitude,
+        lastPoint.longitude
+      );
+
+      if (distanceToPenultimate < 100 && distanceToLast < 500) {
+        activateAlarm();
+      }
+    }
   };
 
-  useEffect(() => {
-    const fetchBusRoutes = async () => {
-      if (currentAddress && finalAddress) {
-        try {
-          console.log('Current Address:', currentAddress); // Log do endereço atual
-          console.log('Final Address:', finalAddress); // Log do endereço final
+  const activateAlarm = () => {
+    if (!alarmActive) {
+      setAlarmActive(true);
+      Notifications.scheduleNotificationAsync({
+        content: {
+          title: 'Atenção!',
+          body: 'Você está próximo do seu destino.',
+          sound: true,
+        },
+        trigger: null, // Trigger imediato
+      });
+    }
+  };
 
-          const response = await axios.get('https://maps.googleapis.com/maps/api/directions/json', {
-            params: {
-              key: 'AIzaSyBVrTs2yDlY96RSXS87DbMSO4QYbHP-sXY',
-              origin: currentAddress,
-              destination: finalAddress,
-              mode: 'transit'
-            }
-          });
+  const getDistance = (
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ) => {
+    const R = 6371e3;
+    const φ1 = lat1 * (Math.PI / 180);
+    const φ2 = lat2 * (Math.PI / 180);
+    const Δφ = (lat2 - lat1) * (Math.PI / 180);
+    const Δλ = (lon1 - lon2) * (Math.PI / 180);
 
-          console.log('API Response:', response.data); // Log da resposta da API
+    const a =
+      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-          if (response.data.routes && response.data.routes.length > 0) {
-            const route = response.data.routes[0];
-            const legs = route.legs;
-
-            // Log detalhado dos modos de transporte
-            legs.forEach((leg: any) => {
-              leg.steps.forEach((step: any) => {
-                console.log('Travel Mode:', step.travel_mode);
-              });
-            });
-
-            const points = route.overview_polyline.points;
-            const decodedRoute = polyline.decode(points).map((point: number[]) => ({
-              latitude: point[0],
-              longitude: point[1]
-            }));
-            setRouteCoordinates(decodedRoute);
-          } else {
-            console.error('No routes found');
-          }
-        } catch (error) {
-          console.error('Error fetching bus routes:', error);
-        }
-      }
-    };
-
-    fetchBusRoutes();
-  }, [currentAddress, finalAddress]);
+    return R * c;
+  };
 
   return (
     <View style={{ flex: 1 }}>
-      <MapView
-        style={{ flex: 1 }}
-        initialRegion={initialRegion}
-      >
-        {/* Paradas de ônibus */}
-        {origin && <BusStops location={origin} />}
-
-        {/* Marcadores de origem e destino */}
-        {origin && (
-          <Marker
-            coordinate={{
-              latitude: origin.latitude,
-              longitude: origin.longitude,
-            }}
-            title="Origem"
-            pinColor="green"
-          />
-        )}
-        {destination && (
-          <Marker
-            coordinate={{
-              latitude: destination.latitude,
-              longitude: destination.longitude,
-            }}
-            title="Destino"
-            pinColor="red"
-          />
-        )}
-
-        {/* Rota */}
-        <Polyline
-          coordinates={routeCoordinates}
-          strokeWidth={2}
-          strokeColor="blue"
-        />
-      </MapView>
+      <NotificationConfig />
+      <LocationTracker checkPosition={checkPosition} />
+      <MapViewComponent routeCoordinates={routeCoordinates} />
     </View>
   );
 };
