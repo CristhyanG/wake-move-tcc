@@ -1,3 +1,4 @@
+import { Query } from "@/API/Google/Places/Query";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -15,7 +16,7 @@ export const styles = StyleSheet.create({
         margin: 20,
         backgroundColor: 'white',
         borderRadius: 20,
-        padding: 35,
+        padding: 55,
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {
@@ -30,13 +31,25 @@ export const styles = StyleSheet.create({
         backgroundColor: '#4CAF50',
         padding: 10,
         borderRadius: 10,
-        marginTop: 10,
+        marginTop: 150,
         width: '80%',
         alignItems: 'center',
     }, 
     titleBtn:{
+        justifyContent: 'flex-start',
         margin: 5,
         fontSize: 16,
         fontWeight: 'bold'
+    },
+    query:{
+        zIndex: 1000,
+        position: 'absolute',
+        top: 60,
+        alignContent: 'center',
+        borderWidth: 1,
+        minHeight: 50,
+        minWidth: 300,
+        borderColor: "#0f0",
+        marginTop: 30,
     }
 })

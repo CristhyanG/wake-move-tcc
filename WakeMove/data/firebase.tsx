@@ -1,6 +1,6 @@
 
 import { getDocs, getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, updateDoc } from 'firebase/firestore';
-import { initializeApp } from "firebase/app";
+import { db } from './firebaseConfig';
 
 interface AddNewFavorite {
   Ponto_A: string;
@@ -13,20 +13,9 @@ interface RmFavoriteProps {
   value: string
 }
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDBY2Etu9eyabqkkw88PvShpwGVuNtNGXk",
-  authDomain: "wakemove-7ef15.firebaseapp.com",
-  projectId: "wakemove-7ef15",
-  storageBucket: "wakemove-7ef15.appspot.com",
-  messagingSenderId: "1066857242896",
-  appId: "1:1066857242896:web:a8b2937210a1c0596cc595"
-};
-
-const app = initializeApp(firebaseConfig);
-
-const db = getFirestore(app);
 
 const userCollectionRef = collection(db, "Usuários");
+
 
 export async function addUser(data: AddNewFavorite) {
   try {

@@ -7,12 +7,18 @@ import { styles } from "@/Components/Atomo/navButton/styles";
 import { Container } from '@/Components/Atomo/container/index';
 import { SearchView } from "@/Components/molecula/SeacrhView/index"
 import 'react-native-get-random-values';
+import { useAuth } from "@/data/userAuth/userCad";
+import { Warning } from "@/Components/Atomo/Cadastrar";
+import { View } from "react-native";
 
 interface HomeScreenProps {
   navigation: StackNavigationProp<any>;
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+
+  const { user } = useAuth()
+
   return (
     <Container>
       <CustomTitle>Wake Move</CustomTitle>
@@ -23,19 +29,26 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         caminho="InitialLocation"
         navigation={navigation}
       />
-
-      <NavButton
-        style={styles.btn}
-        caminho="Favorite"
-        label="Favoritos"
-        navigation={navigation}
-      />
-      <NavButton
-        style={styles.btn}
-        caminho="Cadastro"
-        label="Cadastro"
-        navigation={navigation}
-      />
+      {user ? (
+        <NavButton
+          style={styles.btn}
+          caminho="Favorite"
+          label="Favoritos"
+          navigation={navigation}
+        />
+      ) : (
+        <Warning />
+      )}
+      {!user ? (
+        <NavButton
+          style={styles.btn}
+          caminho="Cadastro"
+          label="Cadastro"
+          navigation={navigation}
+        />
+      ) : (
+        <View></View>
+      )}
       <NavButton
         style={styles.btn}
         caminho="InitialLocation"

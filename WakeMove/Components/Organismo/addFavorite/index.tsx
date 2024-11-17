@@ -2,25 +2,25 @@ import React, { useEffect, useState } from "react";
 import { addFavorite, RmButton, viewFavorite, EditButton } from "@/data/firebase";
 import { Modal, Pressable, Text, View } from "react-native";
 import { styles } from './styles';
-import { Input } from "@/Components/Atomo/TextInput";
 import { CustonModal } from "../alert";
 import { AddButton } from "@/Components/Atomo/addButton";
-//import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Query } from "@/API/Google/Places/Query";
 
+interface SearchProps {
+  page: string;
+}
 
-export const AddFavorite = () => {
+export const AddFavorite: React.FC<SearchProps> = ({ page }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [match, setMatch] = useState('');
-  const [fate, setFate] = useState('');
+  const [origin, setOrigin] = useState('');
+  const [destination, setDestination] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [routes, setRoutes] = useState([]);
-  const [editingRoute, setEditingRoute] = useState(null); // Estado para controlar a edição
-
+  const [editingRoute, setEditingRoute] = useState(null);
 
   const handleShowModal = () => {
     setModalVisible(true);
   };
-
 
   const handleCloseModal = () => {
     setModalVisible(false);
@@ -38,14 +38,21 @@ export const AddFavorite = () => {
     };
   }, []);
 
+  const handleUpdateAddress = (address: string, type: 'origin' | 'destination') => {
+    if (type === 'origin') {
+      setOrigin(address);
+    } else {
+      setDestination(address);
+    }
+  };
+
   const addNewRoute = async () => {
-    if (match && fate) {
+    if (origin && destination) {
+      console.log("Dados a serem adicionados:", { origin, destination });
       try {
-        const data = { Match: match, Fate: fate };
+        const data = { origin, destination };
         await addFavorite(data);
-        setMatch('');
-        setFate('');
-        setIsVisible(false)
+        setIsVisible(false);
         console.log("Rota adicionada com sucesso!");
       } catch (error) {
         console.log("Erro ao adicionar rota aos favoritos", error);
@@ -55,7 +62,7 @@ export const AddFavorite = () => {
     }
   };
 
-  const remolveButton = async (id) => {
+  const remolveButton = async (id: string) => {
     try {
       await RmButton(id);
       setRoutes((prevRoutes) => prevRoutes.filter((route) => route.id !== id));
@@ -66,20 +73,18 @@ export const AddFavorite = () => {
   };
 
   const editButton = async (route) => {
-    setMatch(route.Match);
-    setFate(route.Fate);
-    setEditingRoute(route.id); 
-    setIsVisible(true); 
+    setOrigin(route.origin);
+    setDestination(route.destination);
+    setEditingRoute(route.id);
+    setIsVisible(true);
   };
 
   const saveEditRoute = async () => {
-    if (editingRoute && match && fate) {
+    if (editingRoute && origin && destination) {
       try {
-        const data = { Match: match, Fate: fate };
-        await EditButton(editingRoute, data); // Passa o ID e os novos dados para a função de edição
-        setMatch('');
-        setFate('');
-        setEditingRoute(null); // Reseta o ID da rota sendo editada
+        const data = { origin, destination };
+        await EditButton(editingRoute, data);
+        setEditingRoute(null);
         setIsVisible(false);
         console.log("Rota editada com sucesso!");
       } catch (error) {
@@ -102,19 +107,19 @@ export const AddFavorite = () => {
       >
         <View style={styles.modalContainer}>
           <Text style={styles.titleBtn}>{editingRoute ? 'Editar Rota' : 'Adicione a nova rota'}</Text>
-          <Input
-            onChangeText={setMatch}
-            value={match}
-            placeholder="Digite seu ponto de partida"
-          />
-          <Input
-            onChangeText={setFate}
-            value={fate}
-            placeholder="Digite seu ponto de chegada"
-          />
+          <View style={styles.query}>
+            <Query
+              type="endereço"
+              page="Current"
+            />
+            <Query
+              type="endereço"
+              page="Final"
+            />
+          </View>
           <Pressable
             style={styles.modalBtn}
-            onPress={editingRoute ? saveEditRoute : addNewRoute} // Chama a função adequada
+            onPress={editingRoute ?  saveEditRoute : addNewRoute}
           >
             <Text style={styles.titleBtn}>
               {editingRoute ? 'Salvar Alterações' : 'Adicionar'}
@@ -126,13 +131,12 @@ export const AddFavorite = () => {
             closeText="OK"
             modalText="Preencha todos os campos"
           />
-          
         </View>
       </Modal>
       <AddButton
         routes={routes}
         onRemove={remolveButton}
-        onEdit={editButton} 
+        onEdit={editButton}
       />
       <Pressable
         style={styles.openModal}
@@ -145,4 +149,3 @@ export const AddFavorite = () => {
 };
 
 export default AddFavorite;
-

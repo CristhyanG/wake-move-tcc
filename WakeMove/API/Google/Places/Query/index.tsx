@@ -1,22 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Alert } from "react-native";
 import { useFinalAddress, useCurrentAddress } from "@/API/Context/AddressContext";
 import { useGeocode } from '@/API/Google/Geocoding/Context';
+
 
 interface QueryProps {
     type: string;
     page: string;
 }
 
-export const Query: React.FC<QueryProps> = ({ type, page }) => {
+ export const Query: React.FC<QueryProps> = ({ type, page }) => {
     const { setFinalAddress } = useFinalAddress(); 
     const { setCurrentAddress } = useCurrentAddress();
     const { geocodeAddress } = useGeocode();
 
-    const handleLocationPress = async (address: string, type: 'origin' | 'destination') => {
+    const [addresses, setAddresses] = useState({
+        origin: '',
+        destination: ''
+    });
+
+ const handleLocationPress = async (address: string, type: 'origin' | 'destination') => {
+    console.log(`Atualizando endereço ${type}:`, address); // Verifique se o endereço es
         try {
             const result = await geocodeAddress(address, type);
+            if(result){
+                // Atualize o estado com o novo endereço
+                setAddresses(prev => ({ ...prev, [type]: address }));
+
+                // Se ambos os endereços estiverem preenchidos, adicione-os ao Firestore
+                if (addresses.origin && addresses.destination) {
+                    const data = {
+                        origin: addresses.origin,
+                        destination: addresses.destination,
+                    };
+                }
+            }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "Unknown error";
             Alert.alert("Geocoding failed", errorMessage || "Unknown error");
