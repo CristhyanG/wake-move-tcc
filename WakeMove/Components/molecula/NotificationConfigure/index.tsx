@@ -1,19 +1,29 @@
 import React, { useEffect } from 'react';
 import * as Notifications from 'expo-notifications';
-import * as Permissions from 'expo-permissions';
+import { Platform } from 'react-native';
 
 const NotificationConfig: React.FC = () => {
   useEffect(() => {
-    // Solicita permissões para notificações
-    const requestPermissions = async () => {
-      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-      if (status !== 'granted') {
-        alert('Desculpe, precisamos de permissões para notificações para isso funcionar!');
-        return;
+    const setupNotifications = async () => {
+      // Solicita permissões de notificação
+      if (Platform.OS === 'ios') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Desculpe, precisamos de permissões para notificações para isso funcionar!');
+        }
+      } else if (Platform.OS === 'android') {
+        // Cria canal de notificações para Android
+        await Notifications.setNotificationChannelAsync('default', {
+          name: 'Default Notifications',
+          importance: Notifications.AndroidImportance.HIGH,
+          sound: 'default',
+          vibrationPattern: [0, 250, 250, 250],
+          enableVibrate: true,
+        });
       }
     };
 
-    requestPermissions();
+    setupNotifications();
 
     // Configura o comportamento das notificações
     Notifications.setNotificationHandler({
@@ -25,6 +35,7 @@ const NotificationConfig: React.FC = () => {
     });
 
     return () => {
+      // Cancela todas as notificações ao desmontar o componente
       Notifications.cancelAllScheduledNotificationsAsync();
     };
   }, []);

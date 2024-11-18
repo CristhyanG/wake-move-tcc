@@ -7,16 +7,7 @@ const LOCATION_TASK_NAME = 'user-location-task';
 
 const LocationTracker: React.FC<{ checkPosition: (lat: number, lon: number) => void }> = ({ checkPosition }) => {
   useEffect(() => {
-    const requestLocationPermission = async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        console.log('Permissão de localização negada');
-        return;
-      }
-    };
-
-    requestLocationPermission();
-
+    // Definir a tarefa de localização antes de qualquer coisa
     TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }: { data: { coords: Location.LocationObjectCoords }, error: any }) => {
       if (error) {
         console.error('Erro na tarefa de localização:', error);
@@ -25,29 +16,55 @@ const LocationTracker: React.FC<{ checkPosition: (lat: number, lon: number) => v
 
       if (data) {
         const { coords } = data;
-        checkPosition(coords.latitude, coords.longitude);
+        checkPosition(coords.latitude, coords.longitude); // Chama a função de verificação de posição
       }
     });
 
-    const startLocationUpdates = async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status === 'granted') {
-        await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-          accuracy: Location.Accuracy.High,
-          timeInterval: 1000,
-          distanceInterval: 10,
-        });
+    const requestLocationPermissions = async () => {
+      const { status: foregroundStatus } = await Location.requestForegroundPermissionsAsync();
+      if (foregroundStatus !== 'granted') {
+        console.log('Permissão de localização em primeiro plano negada');
+        return;
       }
+
+      const { status: backgroundStatus } = await Location.requestBackgroundPermissionsAsync();
+      if (backgroundStatus !== 'granted') {
+        console.log('Permissão de localização em segundo plano negada');
+        return;
+      }
+
+      console.log('Permissões de localização concedidas');
+      await startLocationUpdates();
     };
 
-    startLocationUpdates();
+    const startLocationUpdates = async () => {
+      await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+        accuracy: Location.Accuracy.High,
+        timeInterval: 1000, // Atualiza a cada 1 segundo
+        distanceInterval: 10, // Atualiza a cada 10 metros
+        foregroundService: {
+          notificationTitle: 'Wake Move',
+          notificationBody: 'Rastreamento da localização em andamento.',
+          notificationColor: '#000',
+        },
+      });
+    };
+
+    requestLocationPermissions();
 
     return () => {
-      Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
+      const stopUpdates = async () => {
+        const isRegistered = await TaskManager.isTaskRegisteredAsync(LOCATION_TASK_NAME);
+        if (isRegistered) {
+          Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME).catch((error) => console.error('Erro ao parar atualizações de localização:', error));
+        }
+      };
+
+      stopUpdates();
     };
   }, [checkPosition]);
 
-  return null;
+  return null; // Este componente não precisa renderizar nada
 };
 
 export default LocationTracker;
