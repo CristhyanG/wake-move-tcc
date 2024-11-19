@@ -1,5 +1,6 @@
-
-import { getDocs, getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { getDocs, getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, updateDoc, query, where } from 'firebase/firestore';
+import { initializeApp } from "firebase/app";
+import { app } from './firebaseConfig';
 import { db } from './firebaseConfig';
 
 interface AddNewFavorite {
@@ -12,28 +13,6 @@ interface AddNewFavorite {
 interface RmFavoriteProps {
   value: string
 }
-
-
-const userCollectionRef = collection(db, "Usuários");
-
-
-export async function addUser(data: AddNewFavorite) {
-  try {
-    const docRef = await addDoc(userCollectionRef, data);
-    return docRef.id;
-  } catch (error) {
-    console.error("Erro ao adicionar usuário: ", error);
-  }
-};
-
-export async function getAllUsers() {
-  try {
-    const data = await getDocs(userCollectionRef);
-    return data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-  } catch (error) {
-    console.error("Erro ao obter os documentos: ", error);
-  }
-};
 
 // Adicionando favorito
 
@@ -53,19 +32,21 @@ export async function addFavorite(data: AddNewFavorite) {
 
 // Retornando dados do Favorito
 
-export const viewNewFavorite = collection(db, "Favorite")
+export const viewNewFavorite = collection(db, "Favorite");
 
-export async function viewFavorite(callback) {
+export async function viewFavorite(userId, callback) {
   try {
-    const unsubscribe = onSnapshot(viewNewFavorite, (snapshot) => {
+    const uidQuery = query(viewNewFavorite, where('userId', '==', userId));
+    const unsubscribe = onSnapshot(uidQuery, (snapshot) => {
       const favorites = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
       callback(favorites);
-    })
+    });
+    return unsubscribe;
   } catch (error) {
-    console.error("Erro ao retornar dados", error)
+    console.error("Erro ao retornar dados", error);
   }
 }
 

@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
     },
     openModal:{
         alignItems: 'center',
-        backgroundColor: '#4CAF50',
+        backgroundColor: '#ccc',
         padding: 15,
         borderRadius: 10,
         marginTop: 20,
@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
         elevation: 5,
     },
     modalBtn:{
-        backgroundColor: '#4CAF50',
+        backgroundColor: '#ccc',
         padding: 10,
         borderRadius: 10,
         marginTop: 150,
@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         minHeight: 50,
         minWidth: 300,
-        borderColor: "#0f0",
+        borderColor: "#ccc",
         marginTop: 30,
     }
 })

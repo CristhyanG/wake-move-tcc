@@ -5,18 +5,16 @@ import { styles } from './styles';
 import { CustonModal } from "../alert";
 import { AddButton } from "@/Components/Atomo/addButton";
 import { Query } from "@/API/Google/Places/Query";
+import { useAuth } from "@/data/userAuth/userCad";
 
-interface SearchProps {
-  page: string;
-}
-
-export const AddFavorite: React.FC<SearchProps> = ({ page }) => {
+export const AddFavorite = ({ page }) => {
+  const {user} = useAuth()
   const [isVisible, setIsVisible] = useState(false);
-  const [origin, setOrigin] = useState('');
-  const [destination, setDestination] = useState('');
+  const [match, setMatch] = useState('');
+  const [fate, setFate] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [routes, setRoutes] = useState([]);
-  const [editingRoute, setEditingRoute] = useState(null);
+  const [editingRoute, setEditingRoute] = useState(null); // Estado para controlar a edição
 
   const handleShowModal = () => {
     setModalVisible(true);
@@ -27,31 +25,26 @@ export const AddFavorite: React.FC<SearchProps> = ({ page }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = viewFavorite((favorites) => {
-      setRoutes(favorites);
-    });
+    if (user) {
+      const unsubscribe = viewFavorite(user.uid, (favorites) => {
+        setRoutes(favorites);
+      });
 
-    return () => {
-      if (typeof unsubscribe === 'function') {
-        unsubscribe();
-      }
-    };
-  }, []);
-
-  const handleUpdateAddress = (address: string, type: 'origin' | 'destination') => {
-    if (type === 'origin') {
-      setOrigin(address);
-    } else {
-      setDestination(address);
+      return () => {
+        if (typeof unsubscribe === 'function') {
+          unsubscribe();
+        }
+      };
     }
-  };
+  }, [user]);
 
   const addNewRoute = async () => {
-    if (origin && destination) {
-      console.log("Dados a serem adicionados:", { origin, destination });
+    if (match && fate) {
       try {
-        const data = { origin, destination };
+        const data = { Origin: match, Destination: fate, userId: user?.uid };
         await addFavorite(data);
+        setMatch('');
+        setFate('');
         setIsVisible(false);
         console.log("Rota adicionada com sucesso!");
       } catch (error) {
@@ -62,7 +55,7 @@ export const AddFavorite: React.FC<SearchProps> = ({ page }) => {
     }
   };
 
-  const remolveButton = async (id: string) => {
+  const remolveButton = async (id) => {
     try {
       await RmButton(id);
       setRoutes((prevRoutes) => prevRoutes.filter((route) => route.id !== id));
@@ -73,18 +66,20 @@ export const AddFavorite: React.FC<SearchProps> = ({ page }) => {
   };
 
   const editButton = async (route) => {
-    setOrigin(route.origin);
-    setDestination(route.destination);
+    setMatch(route.Origin);
+    setFate(route.Destination);
     setEditingRoute(route.id);
     setIsVisible(true);
   };
 
   const saveEditRoute = async () => {
-    if (editingRoute && origin && destination) {
+    if (editingRoute && match && fate) {
       try {
-        const data = { origin, destination };
-        await EditButton(editingRoute, data);
-        setEditingRoute(null);
+        const data = { Origin: match, Destination: fate };
+        await EditButton(editingRoute, data); // Passa o ID e os novos dados para a função de edição
+        setMatch('');
+        setFate('');
+        setEditingRoute(null); // Reseta o ID da rota sendo editada
         setIsVisible(false);
         console.log("Rota editada com sucesso!");
       } catch (error) {
@@ -109,17 +104,21 @@ export const AddFavorite: React.FC<SearchProps> = ({ page }) => {
           <Text style={styles.titleBtn}>{editingRoute ? 'Editar Rota' : 'Adicione a nova rota'}</Text>
           <View style={styles.query}>
             <Query
-              type="endereço"
+              type="endereco"
               page="Current"
+              value={match}
+              onChange={setMatch}
             />
             <Query
-              type="endereço"
-              page="Final"
+              type="endereco"
+              page={page === "Current" ? "Current" : "Final"}
+              value={fate}
+              onChange={setFate}
             />
           </View>
           <Pressable
             style={styles.modalBtn}
-            onPress={editingRoute ?  saveEditRoute : addNewRoute}
+            onPress={editingRoute ? saveEditRoute : addNewRoute} // Chama a função adequada
           >
             <Text style={styles.titleBtn}>
               {editingRoute ? 'Salvar Alterações' : 'Adicionar'}
