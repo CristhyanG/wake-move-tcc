@@ -1,112 +1,124 @@
-import React, { useState } from 'react';
-import { View, Vibration, Alert } from 'react-native';
-import * as Notifications from 'expo-notifications';
-import * as Speech from 'expo-speech';
+import React, { useEffect, useState } from 'react';
+import { View, Alert, Vibration } from 'react-native';
 import { useFetchRoute } from '@/Api/Google/Directions/FetchRoutes';
-import MapViewComponent from '@/Components/molecula/MapView';
-import NotificationConfig from '@/Components/molecula/NotificationConfigure';
-import LocationTracker from '@/Components/molecula/LocationTracker';
+import * as Location from 'expo-location';
+import * as Speech from 'expo-speech';
+import * as Notifications from 'expo-notifications';
+import { getDistance } from '@/Components/Atomo/CalcDistance'; // Função para calcular a distância
+import MapViewComponent from '@/Components/molecula/MapView'; // Importando o MapViewComponent
 
 const NavigationScreen: React.FC = () => {
-  const { routeCoordinates } = useFetchRoute(); // Garantir que routeCoordinates está sendo desestruturado corretamente
+  const { routeCoordinates, lastTransitPoint, secondLastTransitPoint, intermediateTransitPoint } = useFetchRoute();
   const [alarmActive, setAlarmActive] = useState(false);
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
   // Função para verificar a posição do usuário e disparar o alarme se necessário
   const checkPosition = (userLatitude: number, userLongitude: number): void => {
-    if (routeCoordinates && routeCoordinates.length > 1) {
-      // Encontrar o último ponto de TRANSIT
-      const lastTransitIndex = routeCoordinates.map(point => point.color).lastIndexOf('red');
-      const lastTransitPoint = routeCoordinates[lastTransitIndex];
+    console.log(`Verificando a posição do usuário: Latitude: ${userLatitude}, Longitude: ${userLongitude}`);
 
-      const distanceToLastTransit = getDistance(
+    if (intermediateTransitPoint) {
+      const distanceToIntermediate = getDistance(
         userLatitude,
         userLongitude,
-        lastTransitPoint.latitude,
-        lastTransitPoint.longitude
+        intermediateTransitPoint.latitude,
+        intermediateTransitPoint.longitude
       );
 
-      // Adicionar log para verificar a distância ao último ponto de TRANSIT
-      console.log('Distância até o último ponto de TRANSIT:', distanceToLastTransit);
+      console.log(`Distância até o ponto intermediário: ${distanceToIntermediate} metros`);
 
-      // Ativa o alarme se a distância for menor que os limites estabelecidos
-      if (distanceToLastTransit < 100) {
+      if (distanceToIntermediate < 10 && !alarmActive) {
+        console.log('A distância até o ponto intermediário é menor que 10 metros, ativando o alarme.');
         activateAlarm();
       }
     }
   };
 
-  // Função para ativar o alarme com vibração, TTS, notificações e alerta visual
+  // Função para ativar o alarme
   const activateAlarm = () => {
-    if (!alarmActive) {
-      console.log('Alarme ativado'); // Adiciona log para verificar a ativação do alarme
-      setAlarmActive(true);
+    if (alarmActive) return; // Evita múltiplas ativações
+    setAlarmActive(true);
 
-      // 1. Disparar vibração personalizada
-      const vibrationPattern = [500, 1000, 500]; // Vibra 500ms, pausa 1s, vibra 500ms
-      Vibration.vibrate(vibrationPattern, true); // "true" para vibração contínua
+    console.log('Alarme ativado');
+    const vibrationPattern = [1000, 500, 1000]; // Vibração longa com pausas curtas
+    Vibration.vibrate(vibrationPattern, true); // Vibração contínua
 
-      // 2. Disparar Text-to-Speech
-      Speech.speak('Você está próximo do seu destino. Prepare-se para descer.', {
-        language: 'pt-BR',
-        rate: 1.0, // Velocidade da fala
+    const repeatSpeech = () => {
+      if (!alarmActive) return; // Para se o alarme foi cancelado
+      Speech.speak('Alerta! Ponto próximo. Prepare-se para descer!', { language: 'pt-BR' });
+      setTimeout(repeatSpeech, 5000); // Repete a mensagem a cada 5 segundos
+    };
+
+    repeatSpeech();
+
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: 'Alerta Importante!',
+        body: 'Ponto próximo! Prepare-se para descer.',
+        sound: true,
+        sticky: true, // Notificação persistente
+      },
+      trigger: null,
+    });
+
+    Alert.alert('Atenção!', 'Ponto próximo! Prepare-se para descer.', [
+      { text: 'Cancelar Alarme', onPress: stopAlarm },
+    ]);
+
+    // Cancela automaticamente após 3 minutos
+    setTimeout(() => {
+      if (alarmActive) stopAlarm();
+    }, 180000);
+  };
+
+  // Função para cancelar o alarme
+  const stopAlarm = () => {
+    console.log('Alarme cancelado');
+    Vibration.cancel(); // Cancela a vibração
+    setAlarmActive(false);
+  };
+
+  // Função para obter as atualizações de localização do usuário
+  const getUserLocation = async () => {
+    console.log('Tentando obter a localização do usuário...');
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status === 'granted') {
+      const { coords } = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High, // Alta precisão
       });
-
-      // 3. Disparar notificação persistente
-      Notifications.scheduleNotificationAsync({
-        content: {
-          title: 'Atenção!',
-          body: 'Você está próximo do seu destino. Prepare-se para descer.',
-          sound: true,
-          sticky: true, // Notificação persistente
-        },
-        trigger: null, // Disparo imediato
-      });
-
-      // 4. Exibir alerta visual (extra para redundância)
-      Alert.alert(
-        'Atenção!',
-        'Você está próximo do destino. Prepare-se para descer.',
-        [
-          {
-            text: 'Entendido',
-            onPress: () => {
-              setAlarmActive(false); // Desativa alarme ao confirmar
-              Vibration.cancel(); // Cancela a vibração contínua
-            },
-          },
-        ],
-        { cancelable: false }
-      );
+      console.log(`Localização do usuário: Latitude: ${coords.latitude}, Longitude: ${coords.longitude}`);
+      setUserLocation({ latitude: coords.latitude, longitude: coords.longitude });
+      checkPosition(coords.latitude, coords.longitude);
+    } else {
+      Alert.alert('Permissões', 'Permissão para acessar a localização foi negada.');
+      console.log('Permissão para acessar a localização foi negada.');
     }
   };
 
-  // Função para calcular a distância entre dois pontos usando a fórmula de Haversine
-  const getDistance = (
-    lat1: number,
-    lon1: number,
-    lat2: number,
-    lon2: number
-  ) => {
-    const R = 6371e3; // Raio da Terra em metros
-    const φ1 = lat1 * (Math.PI / 180);
-    const φ2 = lat2 * (Math.PI / 180);
-    const Δφ = (lat2 - lat1) * (Math.PI / 180);
-    const Δλ = (lon2 - lon1) * (Math.PI / 180);
+  useEffect(() => {
+    console.log('Obtendo a localização inicial...');
+    getUserLocation();
 
-    const a =
-      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    // Atualiza a localização a cada 5 segundos
+    const locationInterval = setInterval(() => {
+      console.log('Atualizando a localização do usuário...');
+      getUserLocation();
+    }, 5000);
 
-    return R * c; // Retorna a distância em metros
-  };
+    return () => {
+      clearInterval(locationInterval); // Limpa o intervalo quando o componente for desmontado
+      console.log('Intervalo de localização limpo');
+    };
+  }, [intermediateTransitPoint]); // Agora monitora o ponto intermediário
 
   return (
     <View style={{ flex: 1 }}>
-      <NotificationConfig />
-      <LocationTracker checkPosition={checkPosition} />
+      {/* Passando as informações para o MapViewComponent */}
       <MapViewComponent
-        routeCoordinates={routeCoordinates} // Passa as coordenadas da rota
+        intermediateTransitPoint={intermediateTransitPoint}
+        radius={10}
+        routeCoordinates={routeCoordinates}
+        lastTransitPoint={lastTransitPoint}
+        secondLastTransitPoint={secondLastTransitPoint}
       />
     </View>
   );
