@@ -6,7 +6,7 @@ import { SearchView } from "@/Components/molecula/SeacrhView/index"
 import 'react-native-get-random-values';
 import { Bus } from "@/Components/Atomo/imgLocation";
 import { NewModal } from "@/Components/Atomo/modal";
-import { useFinalAddress } from "@/API/Context/AddressContext";
+import { useFinalAddress } from "@/Api/Context/AddressContext";
 
 
 interface InitialLocationprops {

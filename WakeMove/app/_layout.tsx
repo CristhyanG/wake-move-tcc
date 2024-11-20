@@ -2,7 +2,7 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '@/Screens/Home';
-import CadastroScreen from '../Screens/Cadastro';
+import CadastroScreen from '@/Screens/Cadastro';
 import NavigationScreen from '@/Screens/Navigation';
 import InitialLocationScreen from '@/Screens/InitialLocation';
 import { StatusBar } from 'react-native';

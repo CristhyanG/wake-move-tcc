@@ -6,11 +6,17 @@ import * as Speech from 'expo-speech';
 import * as Notifications from 'expo-notifications';
 import { getDistance } from '@/Components/Atomo/CalcDistance'; // Função para calcular a distância
 import MapViewComponent from '@/Components/molecula/MapView'; // Importando o MapViewComponent
+import { useFinalAddress, useCurrentAddress } from '@/Api/Context/AddressContext'; // Importando os hooks do contexto de endereços
+import { createFavorite } from '@/data/services/CreateFavorite'; // Função para criar favorito
+import { Btn } from '@/Components/Atomo/Button'; // Importando o componente Btn
 
 const NavigationScreen: React.FC = () => {
   const { routeCoordinates, lastTransitPoint, secondLastTransitPoint, intermediateTransitPoint } = useFetchRoute();
   const [alarmActive, setAlarmActive] = useState(false);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+
+  const { finalAddress } = useFinalAddress();  // Pegando o endereço final
+  const { currentAddress } = useCurrentAddress();  // Pegando o endereço atual
 
   // Função para verificar a posição do usuário e disparar o alarme se necessário
   const checkPosition = (userLatitude: number, userLongitude: number): void => {
@@ -110,6 +116,30 @@ const NavigationScreen: React.FC = () => {
     };
   }, [intermediateTransitPoint]); // Agora monitora o ponto intermediário
 
+  // Função para salvar os endereços como favoritos
+  const saveFavorite = async () => {
+    if (currentAddress && finalAddress) {
+      const userId = 'user123'; // Exemplo de userId
+      const success = await createFavorite(userId, currentAddress, finalAddress); // Chama createFavorite e espera o resultado
+  
+      if (success) {
+        console.log("Favorito salvo com sucesso!");
+        // Execute o callback ou outras ações após o sucesso
+        handleCallback(); // Chama a função callback local
+      } else {
+        console.log("Falha ao salvar o favorito.");
+      }
+    } else {
+      Alert.alert('Endereços Incompletos', 'Por favor, verifique os endereços antes de salvar.');
+    }
+  };
+
+  // Função do callback local
+  const handleCallback = () => {
+    console.log("Callback executado!");
+    // Coloque aqui qualquer outra lógica que você queira executar no callback
+  };
+
   return (
     <View style={{ flex: 1 }}>
       {/* Passando as informações para o MapViewComponent */}
@@ -120,6 +150,9 @@ const NavigationScreen: React.FC = () => {
         lastTransitPoint={lastTransitPoint}
         secondLastTransitPoint={secondLastTransitPoint}
       />
+      
+      {/* Botão para salvar os endereços como favoritos */}
+      <Btn title="Salvar como Favorito" onPress={saveFavorite} />
     </View>
   );
 };

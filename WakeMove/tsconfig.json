@@ -2,6 +2,7 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "jsx": "react",  // Adiciona esta linha para ativar a compilação JSX
     "paths": {
       "@/*": [
         "./*"
