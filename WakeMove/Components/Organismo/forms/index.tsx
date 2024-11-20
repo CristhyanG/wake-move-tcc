@@ -1,191 +1,226 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { View } from "react-native";
-import NavButton from '@/Components/Atomo/navButton';
+import { View, Alert, Text, Button } from "react-native";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { addUser, getAllUsers } from '@/data/firebase';
 import Field from '@/Components/molecula/Fields';
 import { Btn } from "@/Components/Atomo/Button/index";
-import { styles } from "@/Components/Organismo/forms/stylesForms"
+import { styles } from "@/Components/Organismo/forms/stylesForms";
 import { CustonModal } from '@/Components/Organismo/alert/index';
-import {BackButton} from "@/Components/Atomo/backButton/index"
+import { BackButton } from "@/Components/Atomo/backButton/index";
+import { useAuth } from '@/data/userAuth/userCad';
 
-interface FormularioProps {
-  tipo: 'Login' | 'NovoCadastro';
-  navigation: any;
-}
+const Formulario: React.FC<{ navigation: any }> = ({ navigation }) => {
+  const { signup, login, loading, error, user, resetPassword } = useAuth();
+  const [isLogin, setIsLogin] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [screen, setScreen] = useState('login')
 
-const Formulario: React.FC<FormularioProps> = ({ tipo, navigation }) => {
-
-  const [users, setUsers] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false)
-
-  const handleShowModal = () =>{
+  const handleShowModal = () => {
     setModalVisible(true);
-  }
+  };
 
-  const handleCloseModal = () =>{
+  const handleCloseModal = () => {
     setModalVisible(false);
-  }
+  };
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const userData = await getAllUsers();
-        setUsers(userData);
-      } catch (error) {
-        console.error(error.message);
-      }
-    };
+  const schemaLogin = yup.object({
+    email: yup.string().email("Email inválido").required("Informe seu email"),
+    senha: yup.string().required("Digite sua senha"),
+  });
 
-    fetchUsers();
-  }, []);
+  const schemaSignup = yup.object({
+    email: yup.string().email("Email inválido").required("Informe seu email"),
+    senha: yup.string().required("Digite sua senha"),
+    confirmaSenha: yup.string().required("Confirme sua senha").oneOf([yup.ref("senha")], "Senhas diferentes"),
+  });
+  const schemaForgotPassword = yup.object({
+    email: yup.string().email("Email inválido").required("Informe seu email"),
+  });
 
-  if (tipo === "Login") {
+  const { control, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(   
+      screen === 'login'
+      ? schemaLogin
+      : screen === 'signup'
+      ? schemaSignup
+      : schemaForgotPassword),
+  });
 
-    const schema = yup.object({
-      email: yup.string().email("Email inválido").required("Informe seu email"),
-      senha: yup.string().required("Digite sua senha")
-    });
+  const handleSignIn = async (data: any) => {
+    try {
+      const { email, senha } = data;
+      await login(email, senha);
+      <CustonModal
+        modalText='Login realizado'
+        visible={modalVisible}
+        onClose={handleCloseModal}
+        closeText= 'OK'
+      />
+      navigation.navigate('Home');
+    } catch (error) {
+      console.log('Erro ao realizar login', error);
+    }
+  };
 
-    const { control, handleSubmit, formState: { errors } } = useForm({
-      resolver: yupResolver(schema),
-    });
+  const handleSignUp = async (data: any) => {
+    try {
+      const { email, senha } = data;
+      await signup(email, senha);
+      navigation.navigate('Home')
+      handleShowModal();
+    } catch (error) {
+      console.log('Erro ao cadastrar usuário', error);
+    }
+  };
 
-    const handleSignIn = async (data) => {
-      try {
-        const { email, senha } = data;
-        console.log("Dados recebidos no handleSignIn:", email, senha);
-        const userId = await addUser({ usEmail: email, usSenha: senha });
-        console.log("Usuário cadastrado com ID:", userId);
-      } catch (error) {
-        console.error("Erro ao cadastrar usuário", error.message);
-      }
-    };
+  const handleResetPassword = async (email: string) => {
+    try {
+      await resetPassword(email);
+      <CustonModal
+        onClose={handleCloseModal}
+        modalText=' Email de redefinição enviado'
+        visible={modalVisible}
+        closeText='OK'
+      />
+      setScreen('login');
+    } catch (error) {
+      console.log('Erro ao redefinir senha', error);
+    }
+  };
+  
 
-    return (
-      <View>
-
-        <Field
-          style={styles.input}
-          control={control}
-          errors={errors}
-          name='email'
-          Title='Email'
-          placeholder='Digite seu email'
-          tipo='email'
-        />
-
-        <Field
-          style={styles.input}
-          control={control}
-          errors={errors}
-          name='senha'
-          Title='Senha'
-          placeholder='Digite sua senha'
-          tipo='senha'
-        />
-
-        <View >
+  return (
+    <View>
+      {screen === 'login' && (
+        <>
+          <Field
+            style={styles.input}
+            control={control}
+            errors={errors}
+            name='email'
+            Title='Email'
+            placeholder='Digite seu email'
+            tipo='email'
+          />
+          <Field
+            style={styles.input}
+            control={control}
+            errors={errors}
+            name='senha'
+            Title='Senha'
+            placeholder='Digite sua senha'
+            tipo='senha'
+          />
+          <View>
+            <Btn
+              title={'Login'}
+              onPress={handleSubmit(handleSignIn)}
+            />
+          </View>
+          <View>
+            <Btn
+              title="Esqueci a senha"
+              onPress={() => setScreen('forgotPassword')}
+            />
+          </View>
+          <View style={styles.viewContent}>
+            <Text>Não tem uma conta? </Text>
+          </View>
+          <Btn
+            title={'Cadastre-se'}
+            onPress={() => setScreen('signup')}
+          />
+        </>
+      )}
+  
+      {screen === 'signup' && (
+        <>
+          <Field
+            style={styles.input}
+            control={control}
+            errors={errors}
+            name='email'
+            Title='Email'
+            placeholder='Digite seu email'
+            tipo='email'
+          />
+          <Field
+            style={styles.input}
+            control={control}
+            errors={errors}
+            name='senha'
+            Title='Senha'
+            placeholder='Digite sua senha'
+            tipo='senha'
+          />
+          <Field
+            style={styles.input}
+            control={control}
+            errors={errors}
+            name='confirmaSenha'
+            Title='Confirma Senha'
+            placeholder='Confirme sua senha'
+            tipo='senha'
+          />
+          <View>
+            <Btn
+              title={'Cadastrar'}
+              onPress={handleSubmit(handleSignUp)}
+            />
+            <CustonModal
+              visible={modalVisible}
+              onClose={handleCloseModal}
+              modalText="Usuário Cadastrado"
+              closeText='OK'
+            />
+          </View>
+          <View style={styles.viewContent}>
+            <Text>Já tem uma conta? </Text>
+          </View>
           <Btn
             title={'Login'}
-            onPress={handleSubmit(handleSignIn)}
+            onPress={() => setScreen('login')}
           />
-        </View>
-        <BackButton
-          caminho="Home"
-          navigation={navigation}
-        />
-      </View>
-    );
-
-  } else if (tipo === "NovoCadastro") {
-
-    const schema = yup.object({
-      email: yup.string().email("email inválido").required("informe seu email"),
-      senha: yup.string().required("digite sua senha"),
-      confirmaSenha: yup.string().required("Confirme sua senha").oneOf([yup.ref("senha")], "Senhas diferentes"),
-    });
-
-    const { control, handleSubmit, formState: { errors } } = useForm({
-      resolver: yupResolver(schema),
-    });
-
-    const handleSignIn = async (data) => {
-      try {
-        const { email, senha } = data;
-        console.log("Dados recebidos no handleSignIn:", email, senha);
-        const userId = await addUser({ usEmail: email, usSenha: senha });
-        console.log("Usuário cadastrado com ID:", userId);
-        handleShowModal();
-      } catch (error) {
-        console.error("Erro ao cadastrar usuário", error.message);
-      }
-    };
-
-    return (
-      <View >
-
-        <Field
-          style={styles.input}
-          control={control}
-          errors={errors}
-          name='email'
-          Title='Email'
-          placeholder='Digite seu email'
-          tipo='email'
-        />
-
-        <Field
-          style={styles.input}
-          control={control}
-          errors={errors}
-          name='senha'
-          Title='Senha'
-          placeholder='Digite sua senha'
-          tipo='senha'
-        />
-
-        <Field
-          style={styles.input}
-          control={control}
-          errors={errors}
-          name='confirmaSenha'
-          Title='Confirma Senha'
-          placeholder='Confirme sua senha'
-          tipo='senha'
-        />
-
-        <View >
+        </>
+      )}
+  
+      {screen === 'forgotPassword' && (
+        <>
+          <Field
+            style={styles.input}
+            control={control}
+            errors={errors}
+            name='email'
+            Title='Email'
+            placeholder='Digite seu email'
+            tipo='email'
+          />
+          <View>
+            <Btn
+              title={'Redefinir Senha'}
+              onPress={handleSubmit(({ email }) => handleResetPassword(email))}
+            />
+          </View>
+          <View style={styles.viewContent}>
+            <Text>Voltar para </Text>
+          </View>
           <Btn
-            title={'Cadastrar'}
-            onPress={handleSubmit(handleSignIn)}
+            title={'Login'}
+            onPress={() => setScreen('login')}
           />
-
-          <CustonModal
-            visible={modalVisible}
-            onClose={handleCloseModal}
-            modalText="Usuário Cadastrado"
-            closeText='OK'
-          >
-          </CustonModal>
-
-          <NavButton
-            style={styles}
-            caminho="Home"
-            label="Voltar"
-            navigation={navigation}
+          <Btn
+            title={'Cadastre-se'}
+            onPress={() => setScreen('signup')}
           />
-        </View>
-        <BackButton
-          caminho="Home"
-          navigation={navigation}
-        />
-      </View>
-    );
-  }
-};
-
+        </>
+      )}
+      <BackButton
+        caminho="Home"
+        navigation={navigation}
+      />
+    </View>
+  );
+}
 
 export default Formulario;

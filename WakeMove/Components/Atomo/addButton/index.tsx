@@ -13,10 +13,10 @@ export const AddButton = ({ routes, onRemove, onEdit }) => {
                         style={styles.btn}
                         onPress={() => console.log(route)}
                     >
-                        <Text style={styles.textAdd}>Ponto de Partida:</Text>
-                        <Text style={styles.textAdd}>{route.Match}</Text>
+                        <Text style={styles.textAdd}>Origin:</Text>
+                        <Text style={styles.textAdd}>{route.Origin}</Text>
                         <Text style={styles.textAdd}>Destino:</Text>
-                        <Text style={styles.textAdd}>{route.Fate}</Text>
+                        <Text style={styles.textAdd}>{route.Destination}</Text>
                     </Pressable>
                     
                     <View>
