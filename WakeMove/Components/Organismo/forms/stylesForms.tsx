@@ -12,4 +12,7 @@ export const styles = StyleSheet.create({
         borderRadius: 5,
         marginBottom: 15,
     },
+    viewContent:{
+        marginTop: 20
+    }
 });

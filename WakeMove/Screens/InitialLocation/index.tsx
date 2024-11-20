@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { CustomTitle } from '@/Components/Atomo/Title';
-import { ImgIndex } from '@/Components/Atomo/imgIndex';
 import { StackNavigationProp } from "@react-navigation/stack";
-import NavButton from "@/Components/Atomo/navButton";
-import { styles } from "@/Components/Atomo/navButton/styles";
 import { Container } from '@/Components/Atomo/container/index';
 import { SearchView } from "@/Components/molecula/SeacrhView/index"
 import 'react-native-get-random-values';
+import { Bus } from "@/Components/Atomo/imgLocation";
+import { NewModal } from "@/Components/Atomo/modal";
+import { useFinalAddress } from "@/API/Context/AddressContext";
 
 
 interface InitialLocationprops {
@@ -14,10 +14,25 @@ interface InitialLocationprops {
 }
 
 const InitialLocationScreen: React.FC<InitialLocationprops> = ({ navigation }) => {
+
+  const [modalVisible, setModalVisible] = useState(true)
+  const {finalAddress} = useFinalAddress()
+
+  const handleModal = () => {
+    setModalVisible(false)
+  }
+
   return (
     <Container>
-      <CustomTitle>Wake Move</CustomTitle>
-      <ImgIndex />
+      <NewModal
+        visible={modalVisible}
+        children={`Deseja confirmar seu endereço para: ${finalAddress}`}
+        navigation={navigation}
+        caminho="Home"
+        onConfirm={handleModal}
+      />
+      <CustomTitle>Para onde vamos ?</CustomTitle>
+      <Bus />
 
       <SearchView
         page="Current"
@@ -25,24 +40,6 @@ const InitialLocationScreen: React.FC<InitialLocationprops> = ({ navigation }) =
         navigation={navigation}
       />
 
-      <NavButton
-        style={styles.btn}
-        caminho="Favorite"
-        label="Favoritos"
-        navigation={navigation}
-      />
-      <NavButton
-        style={styles.btn}
-        caminho="Cadastro"
-        label="Cadastro"
-        navigation={navigation}
-      />
-      <NavButton
-        style={styles.btn}
-        caminho="FinalLocation"
-        label="Enviar dados"
-        navigation={navigation}
-      />
     </Container>
   );
 };

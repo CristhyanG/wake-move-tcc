@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
         marginBottom: 10,
     },
     btn: {
-        backgroundColor: "#4F6FDB",
+        backgroundColor: "#fff",
         borderWidth: 1,
         borderColor: "#000",
         padding: 10,
@@ -42,7 +42,7 @@ export const styles = StyleSheet.create({
     btnEdit:{
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#DB4921',
+        backgroundColor: '#ccc',
         padding: 7,
         borderRadius: 50,
     }

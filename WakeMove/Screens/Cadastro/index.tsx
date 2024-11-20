@@ -17,7 +17,6 @@ const CadastroScreen: React.FC<CadastroScreenProps> = ({ navigation }) => {
             <CustomTitle> Novo Usuário</CustomTitle>
             <Content>
                 <Formulario
-                    tipo="NovoCadastro"
                     navigation={navigation}
                 />
             </Content>

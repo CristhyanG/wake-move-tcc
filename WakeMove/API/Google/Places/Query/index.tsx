@@ -1,22 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Alert } from "react-native";
 import { useFinalAddress, useCurrentAddress } from "@/API/Context/AddressContext";
 import { useGeocode } from '@/API/Google/Geocoding/Context';
 
+//Utilizar onChange para mudanças de valores e inputs genéricos
+
 interface QueryProps {
     type: string;
     page: string;
+    value: string,
+    onChange: (value: string) => void
 }
 
-export const Query: React.FC<QueryProps> = ({ type, page }) => {
+ export const Query: React.FC<QueryProps> = ({ type, page, value = '', onChange = ()=>{} }) => {
     const { setFinalAddress } = useFinalAddress(); 
     const { setCurrentAddress } = useCurrentAddress();
     const { geocodeAddress } = useGeocode();
 
-    const handleLocationPress = async (address: string, type: 'origin' | 'destination') => {
+
+ const handleLocationPress = async (address: string, type: 'origin' | 'destination') => {
+    console.log(`Atualizando endereço ${type}:`, address); 
         try {
             const result = await geocodeAddress(address, type);
+            if(result){
+                onChange(address)
+            }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "Unknown error";
             Alert.alert("Geocoding failed", errorMessage || "Unknown error");
@@ -48,6 +57,14 @@ export const Query: React.FC<QueryProps> = ({ type, page }) => {
                 }}
                 query={{ ...queryConfig, types }}
                 fetchDetails={true}
+                textInputProps={{
+                    value: value,
+                    onChangeText: (text) =>{
+                        if(onChange){
+                            onChange(text)
+                        }
+                    }
+                }}
             /> 
         );
     };
