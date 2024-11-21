@@ -1,16 +1,14 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { 
-  getAuth, 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
   signOut, 
   sendEmailVerification,
   sendPasswordResetEmail,
+  onAuthStateChanged 
 } from "firebase/auth";
-import { app } from "@/data/Config";
+import { auth } from "@/data/Config";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const auth = getAuth(app);
 
 interface AuthContextType {
   user: User | null;
@@ -20,7 +18,13 @@ interface AuthContextType {
   logout: () => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   checkEmailVerification: () => Promise<void>;
-  resetPassword: (email: string) => Promise<void>
+  resetPassword: (email: string) => Promise<void>;
+}
+
+interface User {
+  uid: string;
+  email: string;
+  emailVerified: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -34,22 +38,17 @@ const AuthContext = createContext<AuthContextType>({
   resetPassword: async () => {}
 });
 
-interface User {
-  uid: string;
-  email: string;
-  emailVerified: boolean;
-}
-
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
+  // Carregar usuário do AsyncStorage ao inicializar
   useEffect(() => {
-    const checkUser = async () => {
-      const userData = await AsyncStorage.getItem('user');
-      if (userData) {
-        const parsedUser = JSON.parse(userData);
+    const loadUser = async () => {
+      const storedUser = await AsyncStorage.getItem('user');
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
         setUser({
           uid: parsedUser.uid,
           email: parsedUser.email,
@@ -57,30 +56,45 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
       }
     };
-    checkUser()
-  }, [])
+    loadUser();
+
+    // Listener para mudanças de estado no Firebase Auth
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser({
+          uid: currentUser.uid,
+          email: currentUser.email!,
+          emailVerified: currentUser.emailVerified,
+        });
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const signup = async (email: string, password: string) => {
     setLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      await sendEmailVerification(user);
+      const newUser = userCredential.user;
+      await sendEmailVerification(newUser);
       await AsyncStorage.setItem('user', JSON.stringify({
-        uid: user.uid,
-        email: user.email!,
-        emailVerified: user.emailVerified,
+        uid: newUser.uid,
+        email: newUser.email!,
+        emailVerified: newUser.emailVerified,
       }));
 
       setUser({
-        uid: user.uid,
-        email: user.email!,
-        emailVerified: user.emailVerified,
+        uid: newUser.uid,
+        email: newUser.email!,
+        emailVerified: newUser.emailVerified,
       });
 
-      console.log('Usuário criado com sucesso:', user);
+      console.log("Usuário cadastrado com sucesso:", newUser);
     } catch (error) {
-      console.error('Erro ao cadastrar usuário', error);
+      console.error("Erro ao cadastrar usuário:", error);
       setError((error as Error).message);
     } finally {
       setLoading(false);
@@ -91,20 +105,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+      const loggedUser = userCredential.user;
       await AsyncStorage.setItem('user', JSON.stringify({
-        uid: user.uid,
-        email: user.email!,
-        emailVerified: user.emailVerified,
-      }))
+        uid: loggedUser.uid,
+        email: loggedUser.email!,
+        emailVerified: loggedUser.emailVerified,
+      }));
+
       setUser({
-        uid: user.uid,
-        email: user.email!,
-        emailVerified: user.emailVerified,
+        uid: loggedUser.uid,
+        email: loggedUser.email!,
+        emailVerified: loggedUser.emailVerified,
       });
-      console.log("Login bem-sucedido:", user);
+
+      console.log("Login bem-sucedido:", loggedUser);
     } catch (error) {
-      console.error("Erro ao logar", error);
+      console.error("Erro ao realizar login:", error);
       setError((error as Error).message);
     } finally {
       setLoading(false);
@@ -114,43 +130,46 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = async () => {
     try {
       await signOut(auth);
+      await AsyncStorage.removeItem('user');
       setUser(null);
-      console.log("Usuário desconectado");
+      console.log("Logout realizado com sucesso");
     } catch (error) {
-      console.error("Erro ao realizar logout", error);
+      console.error("Erro ao realizar logout:", error);
       setError((error as Error).message);
     }
   };
 
   const checkEmailVerification = async () => {
     if (auth.currentUser) {
-      await auth.currentUser.reload();  // Atualiza o estado do usuário atual
-      const user = auth.currentUser;
-      setUser({
-        uid: user.uid,
-        email: user.email!,
-        emailVerified: user.emailVerified,
-      });
-      if (user.emailVerified) {
-        console.log("Email verificado com sucesso");
-      } else {
-        console.error("Email não verificado");
+      await auth.currentUser.reload();
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        setUser({
+          uid: currentUser.uid,
+          email: currentUser.email!,
+          emailVerified: currentUser.emailVerified,
+        });
+        if (currentUser.emailVerified) {
+          console.log("Email verificado com sucesso");
+        } else {
+          console.warn("Email ainda não foi verificado");
+        }
       }
     }
   };
-  const resetPassword = async (email: string, )=>{
-    setLoading(true)
-    try{
-      await sendPasswordResetEmail(auth, email);
-    }
-    catch(error){
-      console.error("Erro ao enviar email de redefinição de senha ", error)
-    }
-    finally{
-      setLoading(false)
-    }
-  }
 
+  const resetPassword = async (email: string) => {
+    setLoading(true);
+    try {
+      await sendPasswordResetEmail(auth, email);
+      console.log("Email de redefinição de senha enviado com sucesso");
+    } catch (error) {
+      console.error("Erro ao enviar email de redefinição de senha:", error);
+      setError((error as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <AuthContext.Provider value={{ user, loading, error, signup, logout, login, checkEmailVerification, resetPassword }}>
