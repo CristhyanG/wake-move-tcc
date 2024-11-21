@@ -3,15 +3,14 @@ import { TouchableOpacity, Text } from "react-native";
 import { styles } from './styles'
 
 interface LupaPros {
-    navigation: any
-    caminho: string
+    param: () => void;
 }
 
-export const Lupa = ({navigation, caminho}: LupaPros) => {
+export const Lupa = ({param}: LupaPros) => {
     return (
         <TouchableOpacity 
             style={styles.searchButton}
-            onPress={()=> navigation.navigate(caminho)}
+            onPress={param}
         >
             <Text style={styles.buttonText}>🔍</Text>
         </TouchableOpacity>

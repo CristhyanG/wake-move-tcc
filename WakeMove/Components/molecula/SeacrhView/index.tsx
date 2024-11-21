@@ -3,15 +3,14 @@ import { Query } from "@/Api/Google/Places/Query"
 import { Lupa } from "@/Components/Atomo/iconLupa";
 import { View } from "react-native";
 import { styles } from "./styles"
-import { StackNavigationProp } from "@react-navigation/stack";
+// import { StackNavigationProp } from "@react-navigation/stack";
 
 interface SearchProps {
-    navigation: StackNavigationProp<any>;
     page: string;
-    caminho: string;
+    param: () => void;
 }
 
-export const SearchView: React.FC<SearchProps> = ({ navigation, page, caminho }) => {
+export const SearchView: React.FC<SearchProps> = ({ page, param }) => {
     return (
         <View style={styles.searchView}>
             <Query 
@@ -19,8 +18,7 @@ export const SearchView: React.FC<SearchProps> = ({ navigation, page, caminho })
                 page={page === "Current" ? "Current" : "Final"}
             />
             <Lupa
-                navigation={navigation}
-                caminho={caminho}
+                param={param}
             />
         </View>
     )

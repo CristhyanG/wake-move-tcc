@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { CustomTitle } from '@/Components/Atomo/Title';
 import { ImgIndex } from '@/Components/Atomo/imgIndex';
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -10,6 +10,8 @@ import 'react-native-get-random-values';
 import { useAuth } from "@/data/userAuth/userCad";
 import { Warning } from "@/Components/Atomo/Cadastrar";
 import { View } from "react-native";
+import { NewModal } from "@/Components/Atomo/modal";
+import { useFinalAddress } from "@/Api/Context/AddressContext";
 
 interface HomeScreenProps {
   navigation: StackNavigationProp<any>;
@@ -17,16 +19,37 @@ interface HomeScreenProps {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
+  const [modalVisible, setModalVisible] = useState( false )
+  const {finalAddress} = useFinalAddress()
+
+  const handleModal = () => { 
+    setModalVisible(true); 
+  } 
+  const handleModalClose = () => { 
+    setModalVisible(false); 
+  } 
+  const handleModalConfirm = () => { 
+    setModalVisible(false); 
+    navigation.navigate("InitialLocation"); 
+  }
+
   const { user } = useAuth()
 
   return (
     <Container>
-      <CustomTitle>Wake Move</CustomTitle>
+
+      <NewModal
+        visible={modalVisible}
+        title={`Deseja confirmar seu endereço para: ${finalAddress}`}
+        navigation={navigation}
+        wayBack={handleModalClose}
+        wayOut={handleModalConfirm}
+      />
+      <CustomTitle>Ponto de Destino</CustomTitle>
       <ImgIndex />
       <SearchView
         page="Final"
-        caminho="InitialLocation"
-        navigation={navigation}
+        param={handleModal}
       />
       {user ? (
         <NavButton

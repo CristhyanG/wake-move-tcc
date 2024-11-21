@@ -9,12 +9,13 @@ import MapViewComponent from '@/Components/molecula/MapView'; // Importando o Ma
 import { useFinalAddress, useCurrentAddress } from '@/Api/Context/AddressContext'; // Importando os hooks do contexto de endereços
 import { createFavorite } from '@/data/services/CreateFavorite'; // Função para criar favorito
 import { Btn } from '@/Components/Atomo/Button'; // Importando o componente Btn
+import {useAuth} from '@/data/userAuth/userCad';
 
 const NavigationScreen: React.FC = () => {
   const { routeCoordinates, lastTransitPoint, secondLastTransitPoint, intermediateTransitPoint } = useFetchRoute();
   const [alarmActive, setAlarmActive] = useState(false);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
-
+  const { user } = useAuth();
   const { finalAddress } = useFinalAddress();  // Pegando o endereço final
   const { currentAddress } = useCurrentAddress();  // Pegando o endereço atual
 
@@ -47,6 +48,7 @@ const NavigationScreen: React.FC = () => {
     console.log('Alarme ativado');
     const vibrationPattern = [1000, 500, 1000]; // Vibração longa com pausas curtas
     Vibration.vibrate(vibrationPattern, true); // Vibração contínua
+    console.log('Vibração ativada')
 
     const repeatSpeech = () => {
       if (!alarmActive) return; // Para se o alarme foi cancelado
@@ -78,7 +80,7 @@ const NavigationScreen: React.FC = () => {
 
   // Função para cancelar o alarme
   const stopAlarm = () => {
-    console.log('Alarme cancelado');
+    console.log('Alarme e vibração cancelados');
     Vibration.cancel(); // Cancela a vibração
     setAlarmActive(false);
   };
@@ -151,8 +153,10 @@ const NavigationScreen: React.FC = () => {
         secondLastTransitPoint={secondLastTransitPoint}
       />
       
-      {/* Botão para salvar os endereços como favoritos */}
-      <Btn title="Salvar como Favorito" onPress={saveFavorite} />
+      {user ? (
+        <Btn title="Salvar como Favorito" onPress={saveFavorite} />
+        ) : null
+      } 
     </View>
   );
 };
