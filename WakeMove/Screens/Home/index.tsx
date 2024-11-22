@@ -12,7 +12,8 @@ import { Warning } from "@/Components/Atomo/Cadastrar";
 import { View } from "react-native";
 import { NewModal } from "@/Components/Atomo/modal";
 import { useFinalAddress } from "@/API/Context/AddressContext";
-
+import NotificationConfig from '@/Components/molecula/NotificationConfig';
+import LocationConfig from '@/Components/molecula/LocationConfig';
 interface HomeScreenProps {
   navigation: StackNavigationProp<any>;
 }
@@ -37,6 +38,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   return (
     <Container>
+      <NotificationConfig/>
+      <LocationConfig/>
 
       <NewModal
         visible={modalVisible}

@@ -5,27 +5,31 @@ import { Platform } from 'react-native';
 const NotificationConfig: React.FC = () => {
   useEffect(() => {
     const setupNotifications = async () => {
-      // Solicita permissões de notificação
-      if (Platform.OS === 'ios') {
+      try {
+        // Solicita permissões de notificação e configurações específicas por plataforma
         const { status } = await Notifications.requestPermissionsAsync();
         if (status !== 'granted') {
           alert('Desculpe, precisamos de permissões para notificações para isso funcionar!');
+          return;
         }
-      } else if (Platform.OS === 'android') {
-        // Cria canal de notificações para Android
-        await Notifications.setNotificationChannelAsync('default', {
-          name: 'Default Notifications',
-          importance: Notifications.AndroidImportance.HIGH,
-          sound: 'default',
-          vibrationPattern: [0, 250, 250, 250],
-          enableVibrate: true,
-        });
+
+        if (Platform.OS === 'android') {
+          await Notifications.setNotificationChannelAsync('default', {
+            name: 'Default Notifications',
+            importance: Notifications.AndroidImportance.HIGH,
+            sound: 'default',
+            vibrationPattern: [1000, 500, 1000],
+            enableVibrate: true,
+          });
+        }
+      } catch (error) {
+        console.error('Erro ao configurar notificações:', error);
       }
     };
 
     setupNotifications();
 
-    // Configura o comportamento das notificações
+    // Configura o comportamento padrão das notificações
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
         shouldShowAlert: true,
@@ -36,7 +40,9 @@ const NotificationConfig: React.FC = () => {
 
     return () => {
       // Cancela todas as notificações ao desmontar o componente
-      Notifications.cancelAllScheduledNotificationsAsync();
+      Notifications.cancelAllScheduledNotificationsAsync().catch(error =>
+        console.error('Erro ao cancelar notificações:', error)
+      );
     };
   }, []);
 

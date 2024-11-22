@@ -65,7 +65,7 @@ const NavigationScreen: React.FC = () => {
         sound: true,
         sticky: true, // Notificação persistente
       },
-      trigger: null,
+      trigger: null
     });
 
     Alert.alert('Atenção!', 'Ponto próximo! Prepare-se para descer.', [
@@ -110,7 +110,7 @@ const NavigationScreen: React.FC = () => {
     const locationInterval = setInterval(() => {
       console.log('Atualizando a localização do usuário...');
       getUserLocation();
-    }, 5000);
+    }, 10000);
 
     return () => {
       clearInterval(locationInterval); // Limpa o intervalo quando o componente for desmontado
