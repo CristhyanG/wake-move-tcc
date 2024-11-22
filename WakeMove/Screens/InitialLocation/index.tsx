@@ -11,7 +11,7 @@ import { useAuth } from "@/data/userAuth/userCad";
 import { Warning } from "@/Components/Atomo/Cadastrar";
 import { View } from "react-native";
 import { NewModal } from "@/Components/Atomo/modal";
-import { useCurrentAddress } from "@/Api/Context/AddressContext";
+import { useCurrentAddress } from "@/API/Context/AddressContext";
 
 interface HomeScreenProps {
   navigation: StackNavigationProp<any>;

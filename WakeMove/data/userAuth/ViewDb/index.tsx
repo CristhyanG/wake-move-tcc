@@ -7,13 +7,11 @@ export interface Favorite {
   id: string;
   Origin: string;
   Destination: string;
-  userId: string;
 }
-
 export const viewNewFavorite = collection(db, "Favorite");
 
 // Função para obter os favoritos de um usuário
-export async function viewFavorite(userId: string, callback: (favorites: Favorite[]) => void) {
+export function viewFavorite(userId: string, callback: (favorites: Favorite[]) => void) {
   try {
     // Cria a consulta para buscar favoritos do usuário
     const uidQuery = query(viewNewFavorite, where('userId', '==', userId));

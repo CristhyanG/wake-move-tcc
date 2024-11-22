@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Alert, Vibration } from 'react-native';
-import { useFetchRoute } from '@/Api/Google/Directions/FetchRoutes';
+import { useFetchRoute } from '@/API/Google/Directions/FetchRoutes';
 import * as Location from 'expo-location';
 import * as Speech from 'expo-speech';
 import * as Notifications from 'expo-notifications';
 import { getDistance } from '@/Components/Atomo/CalcDistance'; // Função para calcular a distância
 import MapViewComponent from '@/Components/molecula/MapView'; // Importando o MapViewComponent
-import { useFinalAddress, useCurrentAddress } from '@/Api/Context/AddressContext'; // Importando os hooks do contexto de endereços
+import { useFinalAddress, useCurrentAddress } from '@/API/Context/AddressContext'; // Importando os hooks do contexto de endereços
 import { createFavorite } from '@/data/services/CreateFavorite'; // Função para criar favorito
 import { Btn } from '@/Components/Atomo/Button'; // Importando o componente Btn
 import {useAuth} from '@/data/userAuth/userCad';

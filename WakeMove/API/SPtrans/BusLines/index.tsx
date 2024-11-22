@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { authResponse } from '@/Api/SPtrans/AuthResponse'; // importa a função de autenticação
+import { authResponse } from '@/API/SPtrans/AuthResponse'; // importa a função de autenticação
 import { Marker } from 'react-native-maps';
 
 interface BusLine {

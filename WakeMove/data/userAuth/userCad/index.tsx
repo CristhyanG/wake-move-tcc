@@ -9,13 +9,13 @@ import {
 } from "firebase/auth";
 import { auth } from "@/data/Config";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CustonModal } from "@/Components/Organismo/alert";
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   error: string | null;
-  signup: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
+  signup: ( email: string, password: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   checkEmailVerification: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
@@ -32,16 +32,29 @@ const AuthContext = createContext<AuthContextType>({
   loading: false,
   error: null,
   signup: async () => {},
-  logout: async () => {},
   login: async () => {},
   checkEmailVerification: async () => {},
   resetPassword: async () => {}
 });
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export const AuthProvider = ({ children, navigation }: { children: React.ReactNode, navigation: any }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [closeModalMessage, setCloseModalMessage] = useState("")
+
+  const handleShowModal = (message: string, closeMessage: string) => {
+    setModalMessage(message);
+    setCloseModalMessage(closeMessage);
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    setModalMessage("");
+  };
 
   // Carregar usuário do AsyncStorage ao inicializar
   useEffect(() => {
@@ -92,10 +105,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         emailVerified: newUser.emailVerified,
       });
 
-      console.log("Usuário cadastrado com sucesso:", newUser);
+      handleShowModal("Usuário cadastrado com sucesso. Verifique seu email para ativação.", "OK");
+      navigation.navigate('Home')
     } catch (error) {
-      console.error("Erro ao cadastrar usuário:", error);
-      setError((error as Error).message);
+      handleShowModal(`Erro ao cadastrar usuário: ${(error as Error).message}`, "Tente Novamente");
     } finally {
       setLoading(false);
     }
@@ -118,24 +131,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         emailVerified: loggedUser.emailVerified,
       });
 
-      console.log("Login bem-sucedido:", loggedUser);
+      handleShowModal("Login bem-sucedido.", "OK");
+      navigation.navigate('Home')
     } catch (error) {
-      console.error("Erro ao realizar login:", error);
-      setError((error as Error).message);
+      handleShowModal(`Erro ao realizar login: ${(error as Error).message}`, "Tente Novamente");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const logout = async () => {
-    try {
-      await signOut(auth);
-      await AsyncStorage.removeItem('user');
-      setUser(null);
-      console.log("Logout realizado com sucesso");
-    } catch (error) {
-      console.error("Erro ao realizar logout:", error);
-      setError((error as Error).message);
     }
   };
 
@@ -150,9 +151,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           emailVerified: currentUser.emailVerified,
         });
         if (currentUser.emailVerified) {
-          console.log("Email verificado com sucesso");
+          handleShowModal("Email verificado com sucesso.", "OK");
         } else {
-          console.warn("Email ainda não foi verificado");
+          handleShowModal("Email ainda não foi verificado.", "Tente Novamente");
         }
       }
     }
@@ -162,18 +163,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(true);
     try {
       await sendPasswordResetEmail(auth, email);
-      console.log("Email de redefinição de senha enviado com sucesso");
+      handleShowModal("Email de redefinição de senha enviado com sucesso.", "OK");
     } catch (error) {
-      console.error("Erro ao enviar email de redefinição de senha:", error);
-      setError((error as Error).message);
+      handleShowModal(`Erro ao enviar email: ${(error as Error).message}`,"Tente Novamante");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, signup, logout, login, checkEmailVerification, resetPassword }}>
+    <AuthContext.Provider value={{ user, loading, error, signup, login, checkEmailVerification, resetPassword }}>
       {children}
+      <CustonModal
+        modalText={modalMessage}
+        closeText={closeModalMessage}
+        onClose={handleCloseModal}
+        visible={modalVisible}
+      />
     </AuthContext.Provider>
   );
 };

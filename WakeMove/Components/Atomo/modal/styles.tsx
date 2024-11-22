@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
   btn: {
-    backgroundColor: "#ff0",
+    backgroundColor: "#ccc",
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "#fff",

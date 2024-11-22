@@ -7,5 +7,9 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 20,
         color: '#333',
+    },
+    containerTitle:{
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 })

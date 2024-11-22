@@ -1,28 +1,17 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { View, Alert, Text, Button } from "react-native";
+import { View, Text } from "react-native";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Field from '@/Components/molecula/Fields';
 import { Btn } from "@/Components/Atomo/Button/index";
 import { styles } from "@/Components/Organismo/forms/stylesForms";
-import { CustonModal } from '@/Components/Organismo/alert/index';
-import { BackButton } from "@/Components/Atomo/backButton/index";
+import { BackButton } from '@/Components/Atomo/backButton';
 import { useAuth } from '@/data/userAuth/userCad';
 
 const Formulario: React.FC<{ navigation: any }> = ({ navigation }) => {
-  const { signup, login, loading, error, user, resetPassword } = useAuth();
-  const [isLogin, setIsLogin] = useState(true);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [screen, setScreen] = useState('login')
-
-  const handleShowModal = () => {
-    setModalVisible(true);
-  };
-
-  const handleCloseModal = () => {
-    setModalVisible(false);
-  };
+  const { signup, login, resetPassword } = useAuth();
+  const [screen, setScreen] = useState('login');
 
   const schemaLogin = yup.object({
     email: yup.string().email("Email inválido").required("Informe seu email"),
@@ -34,30 +23,25 @@ const Formulario: React.FC<{ navigation: any }> = ({ navigation }) => {
     senha: yup.string().required("Digite sua senha"),
     confirmaSenha: yup.string().required("Confirme sua senha").oneOf([yup.ref("senha")], "Senhas diferentes"),
   });
+
   const schemaForgotPassword = yup.object({
     email: yup.string().email("Email inválido").required("Informe seu email"),
   });
 
   const { control, handleSubmit, formState: { errors } } = useForm({
-    resolver: yupResolver(   
+    resolver: yupResolver(
       screen === 'login'
-      ? schemaLogin
-      : screen === 'signup'
-      ? schemaSignup
-      : schemaForgotPassword),
+        ? schemaLogin
+        : screen === 'signup'
+          ? schemaSignup
+          : schemaForgotPassword
+    ),
   });
 
   const handleSignIn = async (data: any) => {
     try {
       const { email, senha } = data;
       await login(email, senha);
-      <CustonModal
-        modalText='Login realizado'
-        visible={modalVisible}
-        onClose={handleCloseModal}
-        closeText= 'OK'
-      />
-      navigation.navigate('Home');
     } catch (error) {
       console.log('Erro ao realizar login', error);
     }
@@ -67,8 +51,6 @@ const Formulario: React.FC<{ navigation: any }> = ({ navigation }) => {
     try {
       const { email, senha } = data;
       await signup(email, senha);
-      navigation.navigate('Home')
-      handleShowModal();
     } catch (error) {
       console.log('Erro ao cadastrar usuário', error);
     }
@@ -77,18 +59,10 @@ const Formulario: React.FC<{ navigation: any }> = ({ navigation }) => {
   const handleResetPassword = async (email: string) => {
     try {
       await resetPassword(email);
-      <CustonModal
-        onClose={handleCloseModal}
-        modalText=' Email de redefinição enviado'
-        visible={modalVisible}
-        closeText='OK'
-      />
-      setScreen('login');
     } catch (error) {
       console.log('Erro ao redefinir senha', error);
     }
   };
-  
 
   return (
     <View>
@@ -133,7 +107,7 @@ const Formulario: React.FC<{ navigation: any }> = ({ navigation }) => {
           />
         </>
       )}
-  
+
       {screen === 'signup' && (
         <>
           <Field
@@ -168,12 +142,6 @@ const Formulario: React.FC<{ navigation: any }> = ({ navigation }) => {
               title={'Cadastrar'}
               onPress={handleSubmit(handleSignUp)}
             />
-            <CustonModal
-              visible={modalVisible}
-              onClose={handleCloseModal}
-              modalText="Usuário Cadastrado"
-              closeText='OK'
-            />
           </View>
           <View style={styles.viewContent}>
             <Text>Já tem uma conta? </Text>
@@ -184,7 +152,7 @@ const Formulario: React.FC<{ navigation: any }> = ({ navigation }) => {
           />
         </>
       )}
-  
+
       {screen === 'forgotPassword' && (
         <>
           <Field
