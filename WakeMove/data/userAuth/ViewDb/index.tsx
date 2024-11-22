@@ -1,6 +1,5 @@
-// src/data/firebase/viewFavorite.ts
-import { db } from '@/data/Config';
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot, query, where } from "firebase/firestore";
+import { favoriteCollection } from "@/data/Config";  // Certifique-se de que o caminho está correto
 
 // Definindo a interface Favorite diretamente no arquivo
 export interface Favorite {
@@ -8,31 +7,27 @@ export interface Favorite {
   Origin: string;
   Destination: string;
 }
-export const viewNewFavorite = collection(db, "Favorite");
 
-// Função para obter os favoritos de um usuário
-export function viewFavorite(userId: string, callback: (favorites: Favorite[]) => void) {
-  try {
-    // Cria a consulta para buscar favoritos do usuário
-    const uidQuery = query(viewNewFavorite, where('userId', '==', userId));
-
-    // Retorna o unsubscribe para a função de limpeza (para parar a escuta)
-    const unsubscribe = onSnapshot(uidQuery, (snapshot) => {
-      // Mapeia os documentos recebidos e extrai os dados para o formato de Favorite
-      const favorites: Favorite[] = snapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          id: doc.id,  // O id é obtido do Firestore
-          ...data,  // Espalha o restante dos dados no objeto
-        } as Favorite;  // Cast para garantir que os dados são do tipo Favorite
-      });
-
-      // Chama o callback passando os favoritos
-      callback(favorites);
-    });
-
-    return unsubscribe;  // Retorna o unsubscribe para que o ouvinte possa ser removido quando necessário
-  } catch (error) {
-    console.error("Erro ao retornar dados", error);
+// Modificando a função de busca para filtrar por userUniqueId
+export const viewFavorites = (email: string, callback: (favorites: Favorite[]) => void): void => {
+  if (!email) {
+    console.error("Erro: email não válido");
+    return;
   }
-}
+
+  // Consulta para buscar favoritos filtrados pelo email
+  const favoritesQuery = query(favoriteCollection, where("email", "==", email));
+
+  onSnapshot(favoritesQuery, (snapshot) => {
+    const favorites: Favorite[] = [];
+    snapshot.forEach((doc) => {
+      const data = doc.data() as Omit<Favorite, 'id'>;
+      favorites.push({ id: doc.id, ...data });
+    });
+    callback(favorites); // Passa os favoritos filtrados para o callback
+  }, (error) => {
+    console.error("Erro ao buscar favoritos:", error);
+  });
+};
+
+

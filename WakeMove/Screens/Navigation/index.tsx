@@ -10,6 +10,7 @@ import { useFinalAddress, useCurrentAddress } from '@/API/Context/AddressContext
 import { createFavorite } from '@/data/services/CreateFavorite'; // Função para criar favorito
 import { Btn } from '@/Components/Atomo/Button'; // Importando o componente Btn
 import {useAuth} from '@/data/userAuth/userCad';
+import { string } from 'yup';
 
 const NavigationScreen: React.FC = () => {
   const { routeCoordinates, lastTransitPoint, secondLastTransitPoint, intermediateTransitPoint } = useFetchRoute();
@@ -121,15 +122,20 @@ const NavigationScreen: React.FC = () => {
   // Função para salvar os endereços como favoritos
   const saveFavorite = async () => {
     if (currentAddress && finalAddress) {
-      const userId = 'user123'; // Exemplo de userId
-      const success = await createFavorite(userId, currentAddress, finalAddress); // Chama createFavorite e espera o resultado
-  
+      if (!user?.email) {
+        Alert.alert('Erro de autenticação', 'Usuário não autenticado ou email não disponível.');
+        return;
+      }
+
+      const email = user.email;
+      const success = await createFavorite(email, currentAddress, finalAddress); // Chama createFavorite e espera o resultado
+
       if (success) {
-        console.log("Favorito salvo com sucesso!");
+        console.log('Favorito salvo com sucesso!');
         // Execute o callback ou outras ações após o sucesso
         handleCallback(); // Chama a função callback local
       } else {
-        console.log("Falha ao salvar o favorito.");
+        console.log('Falha ao salvar o favorito.');
       }
     } else {
       Alert.alert('Endereços Incompletos', 'Por favor, verifique os endereços antes de salvar.');

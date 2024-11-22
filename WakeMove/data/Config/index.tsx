@@ -24,4 +24,6 @@ export const db = getFirestore(app);
 // Exemplo de criação de uma coleção Firestore
 export const usersCollection = collection(db, "users");
 
+export const favoriteCollection = collection(db, "Favorite")
+
 console.log("Firebase inicializado com Auth e Firestore configurados.");
