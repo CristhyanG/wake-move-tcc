@@ -1,3 +1,4 @@
+import React from 'react';
 import { Controller } from 'react-hook-form';
 import { View, Text, TextInput } from 'react-native';
 

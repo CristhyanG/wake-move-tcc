@@ -1,6 +1,6 @@
 import React,{useState} from "react";
 import { View, Pressable, Text } from "react-native";
-import { rmFavoriteCollection } from "@/data/firebase";
+import { deleteFavorite } from "@/data/services/DeleteFavorite";
 import { CustonModal } from "@/Components/Organismo/alert";
 import {styles} from "./styles"
 

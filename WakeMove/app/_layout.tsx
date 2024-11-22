@@ -18,16 +18,16 @@ export default function AppNavigator() {
     <AddressProvider>
       <GeocodeProvider>
         <AuthProvider>
-        <NavigationContainer independent={true}>
-          <StatusBar barStyle="light-content" backgroundColor="#000000" />
-          <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="Cadastro" component={CadastroScreen} />
-            <Stack.Screen name="Navigation" component={NavigationScreen} />
-            <Stack.Screen name="InitialLocation" component={InitialLocationScreen} />
-            <Stack.Screen name="Favorite" component={FavoriteScreen} />
-          </Stack.Navigator>
-        </NavigationContainer>
+          <NavigationContainer independent={true}>
+            <StatusBar barStyle="light-content" backgroundColor="#000000" />
+            <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="Cadastro" component={CadastroScreen} />
+              <Stack.Screen name="Navigation" component={NavigationScreen} />
+              <Stack.Screen name="InitialLocation" component={InitialLocationScreen} />
+              <Stack.Screen name="Favorite" component={FavoriteScreen} />
+            </Stack.Navigator>
+          </NavigationContainer>
         </AuthProvider>
       </GeocodeProvider>
     </AddressProvider>

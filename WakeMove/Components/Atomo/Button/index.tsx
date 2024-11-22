@@ -1,6 +1,5 @@
 import React from "react";
 import { Text, View, Pressable } from "react-native";
-// import { ReactNode } from "react";
 import { btnStyles } from "@/Components/Atomo/Button/style"
 interface Props {
     title: string;

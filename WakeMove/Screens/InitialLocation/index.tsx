@@ -13,11 +13,11 @@ import { View } from "react-native";
 import { NewModal } from "@/Components/Atomo/modal";
 import { useCurrentAddress } from "@/API/Context/AddressContext";
 
-interface HomeScreenProps {
+interface InitialLocationProps {
   navigation: StackNavigationProp<any>;
 }
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+const InitialLocationScreen: React.FC<InitialLocationProps> = ({ navigation }) => {
 
   const [modalVisible, setModalVisible] = useState( false )
   const {currentAddress} = useCurrentAddress()
@@ -75,4 +75,4 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   );
 };
 
-export default HomeScreen;
+export default InitialLocationScreen;

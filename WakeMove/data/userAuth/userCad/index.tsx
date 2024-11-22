@@ -2,20 +2,19 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
-  signOut, 
   sendEmailVerification,
   sendPasswordResetEmail,
   onAuthStateChanged 
 } from "firebase/auth";
 import { auth } from "@/data/Config";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CustonModal } from "@/Components/Organismo/alert";
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   error: string | null;
-  signup: ( email: string, password: string) => Promise<void>;
+  success: string | null;  // Variável para mensagens de sucesso
+  signup: (email: string, password: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   checkEmailVerification: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
@@ -31,30 +30,18 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: false,
   error: null,
+  success: null,  // Inicializando a variável de sucesso como null
   signup: async () => {},
   login: async () => {},
   checkEmailVerification: async () => {},
   resetPassword: async () => {}
 });
 
-export const AuthProvider = ({ children, navigation }: { children: React.ReactNode, navigation: any }) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  const [closeModalMessage, setCloseModalMessage] = useState("")
-
-  const handleShowModal = (message: string, closeMessage: string) => {
-    setModalMessage(message);
-    setCloseModalMessage(closeMessage);
-    setModalVisible(true);
-  };
-
-  const handleCloseModal = () => {
-    setModalVisible(false);
-    setModalMessage("");
-  };
+  const [success, setSuccess] = useState<string | null>(null);  // Estado de sucesso
 
   // Carregar usuário do AsyncStorage ao inicializar
   useEffect(() => {
@@ -87,8 +74,11 @@ export const AuthProvider = ({ children, navigation }: { children: React.ReactNo
     return () => unsubscribe();
   }, []);
 
+  // Cadastro de novo usuário
   const signup = async (email: string, password: string) => {
     setLoading(true);
+    setError(null); // Limpar erro anterior
+    setSuccess(null); // Limpar mensagem de sucesso anterior
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const newUser = userCredential.user;
@@ -105,17 +95,19 @@ export const AuthProvider = ({ children, navigation }: { children: React.ReactNo
         emailVerified: newUser.emailVerified,
       });
 
-      handleShowModal("Usuário cadastrado com sucesso. Verifique seu email para ativação.", "OK");
-      navigation.navigate('Home')
+      setSuccess("Usuário cadastrado com sucesso. Verifique seu email para ativação.");
     } catch (error) {
-      handleShowModal(`Erro ao cadastrar usuário: ${(error as Error).message}`, "Tente Novamente");
+      setError(`Erro ao cadastrar usuário: ${(error as Error).message}`);
     } finally {
       setLoading(false);
     }
   };
 
+  // Login do usuário
   const login = async (email: string, password: string) => {
     setLoading(true);
+    setError(null); // Limpar erro anterior
+    setSuccess(null); // Limpar mensagem de sucesso anterior
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const loggedUser = userCredential.user;
@@ -131,15 +123,15 @@ export const AuthProvider = ({ children, navigation }: { children: React.ReactNo
         emailVerified: loggedUser.emailVerified,
       });
 
-      handleShowModal("Login bem-sucedido.", "OK");
-      navigation.navigate('Home')
+      setSuccess("Login bem-sucedido.");
     } catch (error) {
-      handleShowModal(`Erro ao realizar login: ${(error as Error).message}`, "Tente Novamente");
+      setError(`Erro ao realizar login: ${(error as Error).message}`);
     } finally {
       setLoading(false);
     }
   };
 
+  // Verificação de email
   const checkEmailVerification = async () => {
     if (auth.currentUser) {
       await auth.currentUser.reload();
@@ -151,35 +143,32 @@ export const AuthProvider = ({ children, navigation }: { children: React.ReactNo
           emailVerified: currentUser.emailVerified,
         });
         if (currentUser.emailVerified) {
-          handleShowModal("Email verificado com sucesso.", "OK");
+          setSuccess("Email verificado com sucesso.");
         } else {
-          handleShowModal("Email ainda não foi verificado.", "Tente Novamente");
+          setError("Email ainda não foi verificado.");
         }
       }
     }
   };
 
+  // Redefinição de senha
   const resetPassword = async (email: string) => {
     setLoading(true);
+    setError(null); // Limpar erro anterior
+    setSuccess(null); // Limpar mensagem de sucesso anterior
     try {
       await sendPasswordResetEmail(auth, email);
-      handleShowModal("Email de redefinição de senha enviado com sucesso.", "OK");
+      setSuccess("Email de redefinição de senha enviado com sucesso.");
     } catch (error) {
-      handleShowModal(`Erro ao enviar email: ${(error as Error).message}`,"Tente Novamante");
+      setError(`Erro ao enviar email: ${(error as Error).message}`);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, signup, login, checkEmailVerification, resetPassword }}>
+    <AuthContext.Provider value={{ user, loading, error, success, signup, login, checkEmailVerification, resetPassword }}>
       {children}
-      <CustonModal
-        modalText={modalMessage}
-        closeText={closeModalMessage}
-        onClose={handleCloseModal}
-        visible={modalVisible}
-      />
     </AuthContext.Provider>
   );
 };
