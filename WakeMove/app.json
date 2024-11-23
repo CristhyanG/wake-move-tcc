@@ -15,20 +15,31 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": ["location"]
+        "UIBackgroundModes": [
+          "location"
+        ]
       }
     },
     "android": {
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
         "FOREGROUND_SERVICE",
-        "VIBRATE"
+        "VIBRATE",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "READ_SMS",
+        "RECEIVE_SMS",
+        "SEND_SMS"
       ],
       "manifest": {
         "uses-permission": [
           {
             "android:name": "android.permission.FOREGROUND_SERVICE"
+          },
+          {
+            "android:name": "android.permission.ACCESS_BACKGROUND_LOCATION"
           }
         ]
       }
@@ -47,10 +58,15 @@
             "FOREGROUND_SERVICE"
           ]
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "dependencies": {
+      "expo-font": "~10.0.4",
+      "google-sans": "1.0.0"
     }
   }
 }

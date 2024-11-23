@@ -24,6 +24,13 @@ const NotificationConfig: React.FC = () => {
         }
       } catch (error) {
         console.error('Erro ao configurar notificações:', error);
+
+        // Verificação de tipo para tratar o erro corretamente
+        if (error instanceof Error) {
+          console.error('Erro ao configurar notificações:', error.message);
+        } else {
+          console.error('Erro desconhecido ao configurar notificações');
+        }
       }
     };
 
@@ -40,9 +47,16 @@ const NotificationConfig: React.FC = () => {
 
     return () => {
       // Cancela todas as notificações ao desmontar o componente
-      Notifications.cancelAllScheduledNotificationsAsync().catch(error =>
-        console.error('Erro ao cancelar notificações:', error)
-      );
+      Notifications.cancelAllScheduledNotificationsAsync().catch(error => {
+        console.error('Erro ao cancelar notificações:', error);
+
+        // Verificação de tipo para tratar o erro corretamente
+        if (error instanceof Error) {
+          console.error('Erro ao cancelar notificações:', error.message);
+        } else {
+          console.error('Erro desconhecido ao cancelar notificações');
+        }
+      });
     };
   }, []);
 
