@@ -17,7 +17,8 @@
       "infoPlist": {
         "UIBackgroundModes": [
           "location"
-        ]
+        ],
+        "GMSApiKey": "AIzaSyBVrTs2yDlY96RSXS87DbMSO4QYbHP-sXY" 
       }
     },
     "android": {
@@ -33,6 +34,11 @@
         "RECEIVE_SMS",
         "SEND_SMS"
       ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBVrTs2yDlY96RSXS87DbMSO4QYbHP-sXY"
+        }
+      },
       "manifest": {
         "uses-permission": [
           {
