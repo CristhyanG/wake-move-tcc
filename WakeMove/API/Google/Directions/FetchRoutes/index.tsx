@@ -3,13 +3,20 @@ import axios from 'axios';
 import polyline from '@mapbox/polyline';
 import { useFinalAddress, useCurrentAddress } from '@/API/Context/AddressContext';
 
+interface BusRoute {
+  line: string; //Linha Ônibus
+  departureStop: string; //Ponto de partida
+  arrivalStop: string; //Ponto de chegada
+}
+
 export const useFetchRoute = () => {
   const { finalAddress } = useFinalAddress();
   const { currentAddress } = useCurrentAddress();
   const [routeCoordinates, setRouteCoordinates] = useState<{ latitude: number; longitude: number; color: string }[]>([]);
+  const [busRoutes, setBusRoutes] = useState<BusRoute[]>([]);
   const [lastTransitPoint, setLastTransitPoint] = useState<{ latitude: number; longitude: number } | null>(null);
   const [secondLastTransitPoint, setSecondLastTransitPoint] = useState<{ latitude: number; longitude: number } | null>(null);
-  const [intermediateTransitPoint, setIntermediateTransitPoint] = useState<{ latitude: number; longitude: number } | null>(null); // Novo ponto intermediário
+  const [intermediateTransitPoint, setIntermediateTransitPoint] = useState<{ latitude: number; longitude: number } | null>(null);
   const [transitPoints, setTransitPoints] = useState<{ latitude: number; longitude: number }[]>([]);
 
   useEffect(() => {
@@ -26,12 +33,15 @@ export const useFetchRoute = () => {
             }
           });
 
+          console.log(response.data)
+
           if (response.data.routes && response.data.routes.length > 0) {
             const route = response.data.routes[0];
             const legs = route.legs[0];
 
             let fullRoute: { latitude: number; longitude: number; color: string }[] = [];
             let transitPoints: { latitude: number; longitude: number }[] = [];
+            let busRoutes: BusRoute[] = [];
 
             legs.steps.forEach((step: any) => {
               const points = step.polyline ? step.polyline.points : '';
@@ -43,35 +53,31 @@ export const useFetchRoute = () => {
                 }));
 
                 fullRoute = [...fullRoute, ...decodedRoute];
-
-                // Adiciona pontos de TRANSIT ao array transitPoints
-                if (step.travel_mode === 'TRANSIT') {
-                  decodedRoute.forEach((point: { latitude: number; longitude: number }) => {
-                    transitPoints.push({ latitude: point.latitude, longitude: point.longitude });
+                if (step.travel_mode === 'TRANSIT' && step.transit_details) {
+  
+                  transitPoints.push(...decodedRoute);
+                  busRoutes.push({
+                    line: step.transit_details.line.short_name,
+                    departureStop: step.transit_details.departure_stop.name,
+                    arrivalStop: step.transit_details.arrival_stop.name,
                   });
-                  console.log(`TRANSPORT TYPE: TRANSIT`);
-                } else if (step.travel_mode === 'WALKING') {
-                  console.log(`TRANSPORT TYPE: WALKING`);
-                } else {
-                  console.log(`TRANSPORT TYPE: ${step.travel_mode}`);
                 }
               }
             });
 
             setRouteCoordinates(fullRoute);
+            setBusRoutes(busRoutes);
 
-            // Identificar o último, penúltimo e intermediário ponto de TRANSIT
             if (transitPoints.length >= 3) {
               const lastTransit = transitPoints[transitPoints.length - 1];
               const secondLastTransit = transitPoints[transitPoints.length - 9];
-              const intermediateTransit = transitPoints[transitPoints.length -7]; // Ponto intermediário
+              const intermediateTransit = transitPoints[transitPoints.length - 7];
 
               setLastTransitPoint(lastTransit);
               setSecondLastTransitPoint(secondLastTransit);
-              setIntermediateTransitPoint(intermediateTransit); // Configurar o ponto intermediário
+              setIntermediateTransitPoint(intermediateTransit);
             }
 
-            // Definir os pontos de trânsito para o retorno
             setTransitPoints(transitPoints);
           } else {
             console.error('No routes found');
@@ -87,9 +93,10 @@ export const useFetchRoute = () => {
 
   return { 
     routeCoordinates, 
+    busRoutes,
     lastTransitPoint, 
     secondLastTransitPoint, 
-    intermediateTransitPoint, // Retornar o ponto intermediário
+    intermediateTransitPoint,
     transitPoints 
   };
 };

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Alert, Vibration } from 'react-native';
+import { View, Alert, Vibration, Text } from 'react-native';
 import { useFetchRoute } from '@/API/Google/Directions/FetchRoutes';
 import * as Location from 'expo-location';
 import * as Speech from 'expo-speech';
@@ -9,11 +9,11 @@ import MapViewComponent from '@/Components/molecula/MapView'; // Importando o Ma
 import { useFinalAddress, useCurrentAddress } from '@/API/Context/AddressContext'; // Importando os hooks do contexto de endereços
 import { createFavorite } from '@/data/services/CreateFavorite'; // Função para criar favorito
 import { Btn } from '@/Components/Atomo/Button'; // Importando o componente Btn
-import {useAuth} from '@/data/userAuth/userCad';
-import { string } from 'yup';
+import { useAuth } from '@/data/userAuth/userCad';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const NavigationScreen: React.FC = () => {
-  const { routeCoordinates, lastTransitPoint, secondLastTransitPoint, intermediateTransitPoint } = useFetchRoute();
+  const { routeCoordinates, lastTransitPoint, secondLastTransitPoint, intermediateTransitPoint, busRoutes } = useFetchRoute();
   const [alarmActive, setAlarmActive] = useState(false);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const { user } = useAuth();
@@ -158,11 +158,24 @@ const NavigationScreen: React.FC = () => {
         lastTransitPoint={lastTransitPoint}
         secondLastTransitPoint={secondLastTransitPoint}
       />
-      
+
+      {busRoutes.length > 0 && (
+        <View style={{maxHeight: 400}}>
+          {busRoutes.map((bus, index) => (
+            <View key={index} style={{padding: 10, borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
+              <Text>Linha: {bus.line} </Text>
+              <Text>Time: {}</Text>
+              <Text>Parada de partida: {bus.arrivalStop}</Text>
+              <Text>Parada de chegada: {bus.departureStop}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+
       {user ? (
         <Btn title="Salvar como Favorito" onPress={saveFavorite} />
-        ) : null
-      } 
+      ) : null
+      }
     </View>
   );
 };
