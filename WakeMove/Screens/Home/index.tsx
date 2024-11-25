@@ -9,19 +9,29 @@ import { SearchView } from "@/Components/molecula/SeacrhView/index"
 import 'react-native-get-random-values';
 import { useAuth } from "@/data/userAuth/userCad";
 import { Warning } from "@/Components/Atomo/Cadastrar";
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import { NewModal } from "@/Components/Atomo/modal";
 import { useFinalAddress } from "@/API/Context/AddressContext";
 import NotificationConfig from '@/Components/molecula/NotificationConfig';
 import LocationConfig from '@/Components/molecula/LocationConfig';
+
 interface HomeScreenProps {
   navigation: StackNavigationProp<any>;
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
-  const [modalVisible, setModalVisible] = useState( false )
-  const {finalAddress} = useFinalAddress()
+  const [modalVisible, setModalVisible] = useState( false );
+  const {finalAddress} = useFinalAddress();
+
+  const validation = () => {
+    if (finalAddress == '') {
+      Alert.alert("Endereço não pode estar vazio. Adicione um endereço") 
+      setModalVisible(false)
+    } else {
+      handleModal()
+    }
+  }
 
   const handleModal = () => { 
     setModalVisible(true); 
@@ -31,7 +41,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   } 
   const handleModalConfirm = () => { 
     setModalVisible(false); 
-    navigation.navigate("InitialLocation"); 
+    navigation.navigate("Test"); 
   }
 
   const { user } = useAuth()
@@ -43,7 +53,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
       <NewModal
         visible={modalVisible}
-        title={`Deseja confirmar seu endereço para: ${finalAddress}`}
+        title={`Deseja confirmar seu endereço para: ${finalAddress || "Endereço desconhecido"}`}
         navigation={navigation}
         wayBack={handleModalClose}
         wayOut={handleModalConfirm}
@@ -52,7 +62,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       <ImgIndex />
       <SearchView
         page="Final"
-        param={handleModal}
+        param={validation}
       />
       {user ? (
         <NavButton

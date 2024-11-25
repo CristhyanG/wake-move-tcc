@@ -10,6 +10,8 @@ import { AddressProvider } from '@/API/Context/AddressContext';
 import { FavoriteScreen } from '@/Screens/Favorite';
 import { AuthProvider } from '@/data/userAuth/userCad';
 
+import TestScreen from '@/Screens/Test';
+
 const Stack = createStackNavigator();
 
 export default function AppNavigator() {
@@ -24,6 +26,9 @@ export default function AppNavigator() {
               <Stack.Screen name="Navigation" component={NavigationScreen} />
               <Stack.Screen name="InitialLocation" component={InitialLocationScreen} />
               <Stack.Screen name="Favorite" component={FavoriteScreen} />
+
+              <Stack.Screen name="Test" component={TestScreen} />
+
             </Stack.Navigator>
           </NavigationContainer>
         </AuthProvider>
