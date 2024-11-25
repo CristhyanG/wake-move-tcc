@@ -10,15 +10,26 @@ import { useFinalAddress, useCurrentAddress } from '@/API/Context/AddressContext
 import { createFavorite } from '@/data/services/CreateFavorite'; // Função para criar favorito
 import { Btn } from '@/Components/Atomo/Button'; // Importando o componente Btn
 import { useAuth } from '@/data/userAuth/userCad';
-import { ScrollView } from 'react-native-gesture-handler';
+import { useRoute, RouteProp } from '@react-navigation/native';
+
+type NavigationScreenProp = RouteProp<{ params: { Origin: string, Destination: string } }, 'params'>
 
 const NavigationScreen: React.FC = () => {
-  const { routeCoordinates, lastTransitPoint, secondLastTransitPoint, intermediateTransitPoint, busRoutes } = useFetchRoute();
+  const { routeCoordinates, lastTransitPoint, secondLastTransitPoint, intermediateTransitPoint, busRoutes, duration } = useFetchRoute();
   const [alarmActive, setAlarmActive] = useState(false);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const { user } = useAuth();
-  const { finalAddress } = useFinalAddress();  // Pegando o endereço final
-  const { currentAddress } = useCurrentAddress();  // Pegando o endereço atual
+  const { finalAddress, setFinalAddress } = useFinalAddress();  // Pegando o endereço final
+  const { currentAddress, setCurrentAddress } = useCurrentAddress();  // Pegando o endereço atual
+  const route = useRoute<NavigationScreenProp>() // Utilizando hook "useRoute" para acessar parâmetro 
+
+  // Se o estado estiver com valores
+  useEffect(() => {
+    if(route.params){
+      setCurrentAddress(route.params.Origin)
+      setFinalAddress(route.params.Destination)
+    }
+  })
 
   // Função para verificar a posição do usuário e disparar o alarme se necessário
   const checkPosition = (userLatitude: number, userLongitude: number): void => {
@@ -126,7 +137,6 @@ const NavigationScreen: React.FC = () => {
         Alert.alert('Erro de autenticação', 'Usuário não autenticado ou email não disponível.');
         return;
       }
-
       const email = user.email;
       const success = await createFavorite(email, currentAddress, finalAddress); // Chama createFavorite e espera o resultado
 
@@ -134,7 +144,7 @@ const NavigationScreen: React.FC = () => {
         console.log('Favorito salvo com sucesso!');
         // Execute o callback ou outras ações após o sucesso
         handleCallback(); // Chama a função callback local
-      } else {
+      } else{
         console.log('Falha ao salvar o favorito.');
       }
     } else {
@@ -160,13 +170,13 @@ const NavigationScreen: React.FC = () => {
       />
 
       {busRoutes.length > 0 && (
-        <View style={{maxHeight: 400}}>
+        <View style={{ maxHeight: 400 }}>
           {busRoutes.map((bus, index) => (
-            <View key={index} style={{padding: 10, borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
+            <View key={index} style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
               <Text>Linha: {bus.line} </Text>
-              <Text>Time: {}</Text>
-              <Text>Parada de partida: {bus.arrivalStop}</Text>
-              <Text>Parada de chegada: {bus.departureStop}</Text>
+              <Text>Ponto de partida: {bus.arrivalStop}</Text>
+              <Text>Ponto de chegada: {bus.departureStop}</Text>
+              <Text>Tempo estimado da Joranda: { duration }</Text>
             </View>
           ))}
         </View>

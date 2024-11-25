@@ -7,6 +7,7 @@ interface BusRoute {
   line: string; //Linha Ônibus
   departureStop: string; //Ponto de partida
   arrivalStop: string; //Ponto de chegada
+
 }
 
 export const useFetchRoute = () => {
@@ -18,6 +19,7 @@ export const useFetchRoute = () => {
   const [secondLastTransitPoint, setSecondLastTransitPoint] = useState<{ latitude: number; longitude: number } | null>(null);
   const [intermediateTransitPoint, setIntermediateTransitPoint] = useState<{ latitude: number; longitude: number } | null>(null);
   const [transitPoints, setTransitPoints] = useState<{ latitude: number; longitude: number }[]>([]);
+  const [duration, setDuration] = useState<string>('')
 
   useEffect(() => {
     const fetchRoute = async () => {
@@ -79,6 +81,10 @@ export const useFetchRoute = () => {
             }
 
             setTransitPoints(transitPoints);
+
+            const durationText = legs.duration.text;
+            setDuration(durationText)
+
           } else {
             console.error('No routes found');
           }
@@ -97,6 +103,7 @@ export const useFetchRoute = () => {
     lastTransitPoint, 
     secondLastTransitPoint, 
     intermediateTransitPoint,
-    transitPoints 
+    transitPoints,
+    duration
   };
 };
