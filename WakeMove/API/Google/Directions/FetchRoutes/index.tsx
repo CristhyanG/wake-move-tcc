@@ -72,11 +72,9 @@ export const useFetchRoute = () => {
 
             if (transitPoints.length >= 3) {
               const lastTransit = transitPoints[transitPoints.length - 1];
-              const secondLastTransit = transitPoints[transitPoints.length - 9];
-              const intermediateTransit = transitPoints[transitPoints.length - 7];
+              const intermediateTransit = transitPoints[transitPoints.length - 6];
 
               setLastTransitPoint(lastTransit);
-              setSecondLastTransitPoint(secondLastTransit);
               setIntermediateTransitPoint(intermediateTransit);
             }
 

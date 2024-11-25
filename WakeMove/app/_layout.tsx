@@ -7,7 +7,6 @@ import NavigationScreen from '@/Screens/Navigation';
 import InitialLocationScreen from '@/Screens/InitialLocation';
 import { StatusBar } from 'react-native';
 import { AddressProvider } from '@/API/Context/AddressContext';
-import { GeocodeProvider } from '@/API/Google/Geocoding/Context';
 import { FavoriteScreen } from '@/Screens/Favorite';
 import { AuthProvider } from '@/data/userAuth/userCad';
 
@@ -16,7 +15,6 @@ const Stack = createStackNavigator();
 export default function AppNavigator() {
   return (
     <AddressProvider>
-      <GeocodeProvider>
         <AuthProvider>
           <NavigationContainer independent={true}>
             <StatusBar barStyle="light-content" backgroundColor="#000000" />
@@ -29,7 +27,6 @@ export default function AppNavigator() {
             </Stack.Navigator>
           </NavigationContainer>
         </AuthProvider>
-      </GeocodeProvider>
     </AddressProvider>
   );
 }

@@ -5,7 +5,6 @@ import MapView, { Polyline, PROVIDER_GOOGLE, Marker, Circle } from 'react-native
 type MapViewComponentProps = {
   routeCoordinates: { latitude: number; longitude: number; color: string }[]; // Coordenadas da rota
   lastTransitPoint: { latitude: number; longitude: number } | null; // Último ponto de trânsito
-  secondLastTransitPoint: { latitude: number; longitude: number } | null; // Penúltimo ponto de trânsito
   intermediateTransitPoint:  { latitude: number; longitude: number } | null;
   radius: number;
 };
@@ -13,7 +12,6 @@ type MapViewComponentProps = {
 const MapViewComponent: React.FC<MapViewComponentProps> = ({
   routeCoordinates,
   lastTransitPoint,
-  secondLastTransitPoint,
   intermediateTransitPoint,
   radius,
 }) => {
@@ -21,7 +19,6 @@ const MapViewComponent: React.FC<MapViewComponentProps> = ({
 
   useEffect(() => {
     console.log('Último ponto de TRANSIT:', lastTransitPoint);
-    console.log('Penúltimo ponto de TRANSIT:', secondLastTransitPoint);
 
     if (routeCoordinates.length > 0) {
       const latitudes = routeCoordinates.map(point => point.latitude);
@@ -83,14 +80,6 @@ const MapViewComponent: React.FC<MapViewComponentProps> = ({
               coordinate={lastTransitPoint}
               pinColor="green"
               title="Último Ponto de TRANSIT"
-            />
-          )}
-
-          {secondLastTransitPoint && (
-            <Marker
-              coordinate={secondLastTransitPoint}
-              pinColor="green"
-              title="Penúltimo Ponto de TRANSIT"
             />
           )}
 

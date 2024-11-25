@@ -11,8 +11,8 @@ import { createFavorite } from '@/data/services/CreateFavorite'; // Função par
 import { Btn } from '@/Components/Atomo/Button'; // Importando o componente Btn
 import { useAuth } from '@/data/userAuth/userCad';
 import { useRoute, RouteProp } from '@react-navigation/native';
-
 type NavigationScreenProp = RouteProp<{ params: { Origin: string, Destination: string } }, 'params'>
+import { CustonModal } from '@/Components/Organismo/alert';
 
 const NavigationScreen: React.FC = () => {
   const { routeCoordinates, lastTransitPoint, secondLastTransitPoint, intermediateTransitPoint, busRoutes, duration } = useFetchRoute();
@@ -30,6 +30,8 @@ const NavigationScreen: React.FC = () => {
       setFinalAddress(route.params.Destination)
     }
   })
+  const [modalVisible, setModalVisible] = useState(false);
+
 
   // Função para verificar a posição do usuário e disparar o alarme se necessário
   const checkPosition = (userLatitude: number, userLongitude: number): void => {
@@ -45,8 +47,8 @@ const NavigationScreen: React.FC = () => {
 
       console.log(`Distância até o ponto intermediário: ${distanceToIntermediate} metros`);
 
-      if (distanceToIntermediate < 10 && !alarmActive) {
-        console.log('A distância até o ponto intermediário é menor que 10 metros, ativando o alarme.');
+      if (distanceToIntermediate < 60 && !alarmActive) {
+        console.log('A distância até o ponto intermediário é menor que 60 metros, ativando o alarme.');
         activateAlarm();
       }
     }
@@ -118,11 +120,11 @@ const NavigationScreen: React.FC = () => {
     console.log('Obtendo a localização inicial...');
     getUserLocation();
 
-    // Atualiza a localização a cada 5 segundos
+    // Atualiza a localização a cada 1 segundos
     const locationInterval = setInterval(() => {
       console.log('Atualizando a localização do usuário...');
       getUserLocation();
-    }, 10000);
+    }, 1000);
 
     return () => {
       clearInterval(locationInterval); // Limpa o intervalo quando o componente for desmontado
@@ -154,8 +156,13 @@ const NavigationScreen: React.FC = () => {
 
   // Função do callback local
   const handleCallback = () => {
-    console.log("Callback executado!");
-    // Coloque aqui qualquer outra lógica que você queira executar no callback
+    setModalVisible(true); // Exibe o modal
+  };
+
+  const modalMessage = 'Rota salva com sucesso';
+
+  const closeModal = () => {
+    setModalVisible(false); // Fecha o modal
   };
 
   return (
@@ -163,10 +170,9 @@ const NavigationScreen: React.FC = () => {
       {/* Passando as informações para o MapViewComponent */}
       <MapViewComponent
         intermediateTransitPoint={intermediateTransitPoint}
-        radius={10}
+        radius={60}
         routeCoordinates={routeCoordinates}
         lastTransitPoint={lastTransitPoint}
-        secondLastTransitPoint={secondLastTransitPoint}
       />
 
       {busRoutes.length > 0 && (
@@ -177,15 +183,22 @@ const NavigationScreen: React.FC = () => {
               <Text>Ponto de partida: {bus.arrivalStop}</Text>
               <Text>Ponto de chegada: {bus.departureStop}</Text>
               <Text>Tempo estimado da Joranda: { duration }</Text>
+
             </View>
           ))}
+
+          {user ? (
+            <Btn title="Salvar rota como Favorito" onPress={saveFavorite} />
+          ) : null}
         </View>
       )}
 
-      {user ? (
-        <Btn title="Salvar como Favorito" onPress={saveFavorite} />
-      ) : null
-      }
+      <CustonModal
+        visible={modalVisible}
+        onClose={closeModal}
+        modalText={modalMessage}
+        closeText="Ok"
+      />
     </View>
   );
 };
