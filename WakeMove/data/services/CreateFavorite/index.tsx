@@ -1,6 +1,7 @@
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '@/data/Config'; // Importe sua configuração do Firebase aqui
 
+
 export const createFavorite = async (email: string, currentAddress: string, finalAddress: string) => {
   try {
     const newFavoriteData = {
